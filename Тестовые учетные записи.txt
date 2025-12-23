@@ -1,0 +1,15 @@
+Тестовые учетные записи
+Администратор:
+Email: admin@vetclinic.ru
+
+Пароль: admin123
+
+Сотрудник:
+Email: doctor@vetclinic.ru
+
+Пароль: doctor123
+
+Клиент:
+Email: client@example.ru
+
+Пароль: client123
