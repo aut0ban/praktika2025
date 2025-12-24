@@ -1,0 +1,22 @@
+1. Создание виртуального окружения
+# Для Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Для Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
+2. Установка зависимостей
+bash
+pip install -r requirements.txt
+
+3. Настройка проектанициализация базы данных
+
+python run.py
+
+4. Запуск приложения
+
+python app.py
+
+5. Открытие в браузере
+Перейдите по адресу: http://localhost:5000
