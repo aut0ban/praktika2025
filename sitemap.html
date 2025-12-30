@@ -1,0 +1,592 @@
+{% extends base_template %}
+
+{% block title %}Карта сайта - Ветеринарная клиника "Друг"{% endblock %}
+
+{% block content %}
+<!-- Заголовок страницы -->
+<div class="page-header">
+    <div class="container">
+        <h1>Карта сайта</h1>
+        <p>Полная структура и навигация по сайту</p>
+    </div>
+</div>
+
+<!-- Основная карта сайта -->
+<section class="sitemap-section">
+    <div class="container">
+        <div class="sitemap-container">
+            <!-- Основные разделы -->
+            <div class="sitemap-category">
+                <h2><i class="fas fa-sitemap"></i> Основная навигация</h2>
+                <ul class="sitemap-list">
+                    <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Главная страница</a>
+                        <ul>
+                            <li><a href="{{ url_for('index') }}#about">О клинике</a></li>
+                            <li><a href="{{ url_for('index') }}#services">Наши услуги</a></li>
+                            <li><a href="{{ url_for('index') }}#doctors">Наши врачи</a></li>
+                            <li><a href="{{ url_for('index') }}#news">Последние новости</a></li>
+                            <li><a href="{{ url_for('index') }}#articles">Полезные статьи</a></li>
+                            <li><a href="{{ url_for('index') }}#appointment">Запись на прием</a></li>
+                            <li><a href="{{ url_for('index') }}#testimonials">Отзывы клиентов</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('services') }}"><i class="fas fa-stethoscope"></i> Услуги и цены</a>
+                        <ul>
+                            <li>Терапия и диагностика</li>
+                            <li>Хирургия</li>
+                            <li>Вакцинация</li>
+                            <li>Стоматология</li>
+                            <li>Груминг</li>
+                            <li>Экстренная помощь</li>
+                            <li>Дополнительные услуги</li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('doctors') }}"><i class="fas fa-user-md"></i> Наши врачи</a>
+                        <ul>
+                            <li>Терапевты</li>
+                            <li>Хирурги</li>
+                            <li>Стоматологи</li>
+                            <li>Дерматологи</li>
+                            <li>Кардиологи</li>
+                            <li>Фильтр по специализации</li>
+                            <li>Расписание врачей</li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('articles') }}"><i class="fas fa-newspaper"></i> Полезные статьи</a>
+                        <ul>
+                            <li>Уход за питомцами</li>
+                            <li>Питание</li>
+                            <li>Вакцинация</li>
+                            <li>Здоровье</li>
+                            <li>Хирургия</li>
+                            <li>Категории статей</li>
+                            <li>Поиск по статьям</li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('news') }}"><i class="fas fa-bullhorn"></i> Новости клиники</a>
+                        <ul>
+                            <li>Все новости</li>
+                            <li>Акции и скидки</li>
+                            <li>События</li>
+                            <li>Обновления</li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ url_for('contacts') }}"><i class="fas fa-address-book"></i> Контакты и запись</a>
+                        <ul>
+                            <li>Наши контакты</li>
+                            <li>Онлайн-запись</li>
+                            <li>Форма обратной связи</li>
+                            <li>Карта проезда</li>
+                            <li>График работы</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Пользовательский раздел -->
+            <div class="sitemap-category">
+                <h2><i class="fas fa-users"></i> Личный кабинет</h2>
+                <ul class="sitemap-list">
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('profile') }}"><i class="fas fa-user"></i> Личный кабинет</a>
+                            <ul>
+                                <li>Мои данные</li>
+                                <li>История посещений</li>
+                                <li>Предстоящие записи</li>
+                                {% if current_user.role in ['staff', 'admin'] %}
+                                    <li>Расписание</li>
+                                    <li>Пациенты</li>
+                                {% endif %}
+                                {% if current_user.role == 'admin' %}
+                                    <li>Администрирование</li>
+                                    <li>Статистика</li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                        <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Выход</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Вход в систему</a></li>
+                        <li><a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Регистрация</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Служебные страницы -->
+            <div class="sitemap-category">
+                <h2><i class="fas fa-cog"></i> Служебные страницы</h2>
+                <ul class="sitemap-list">
+                    <li><a href="{{ url_for('sitemap') }}"><i class="fas fa-map"></i> Карта сайта (текущая страница)</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i> Политика конфиденциальности</a></li>
+                    <li><a href="#"><i class="fas fa-file-contract"></i> Пользовательское соглашение</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i> Помощь и FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Доступность -->
+            <div class="sitemap-category">
+                <h2><i class="fas fa-universal-access"></i> Версия для слабовидящих</h2>
+                <ul class="sitemap-list">
+                    <li><a href="{{ url_for('toggle_accessible') }}">Переключить версию для слабовидящих</a></li>
+                    <li>Настройки контраста</li>
+                    <li>Изменение размера шрифта</li>
+                    <li>Управление изображениями</li>
+                </ul>
+            </div>
+
+            <!-- Поиск -->
+            <div class="sitemap-category">
+                <h2><i class="fas fa-search"></i> Поиск по сайту</h2>
+                <div class="search-sitemap">
+                    <form action="{{ url_for('search') }}" method="get">
+                        <div class="search-box">
+                            <input type="text" name="q" placeholder="Введите поисковый запрос..." value="{{ request.args.get('q', '') }}">
+                            <button type="submit"><i class="fas fa-search"></i> Найти</button>
+                        </div>
+                    </form>
+                    <p>Поиск работает по всем статьям, новостям, услугам и врачам.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Быстрые ссылки -->
+        <div class="quick-links-section">
+            <h3><i class="fas fa-bolt"></i> Быстрые ссылки</h3>
+            <div class="quick-links-grid">
+                <a href="{{ url_for('contacts') }}" class="quick-link">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Онлайн-запись</span>
+                </a>
+                <a href="tel:+74951234567" class="quick-link">
+                    <i class="fas fa-phone"></i>
+                    <span>+7 (495) 123-45-67</span>
+                </a>
+                <a href="tel:+74957654321" class="quick-link">
+                    <i class="fas fa-ambulance"></i>
+                    <span>Скорая помощь</span>
+                </a>
+                <a href="{{ url_for('services') }}" class="quick-link">
+                    <i class="fas fa-list-alt"></i>
+                    <span>Услуги и цены</span>
+                </a>
+                <a href="{{ url_for('doctors') }}" class="quick-link">
+                    <i class="fas fa-user-md"></i>
+                    <span>Наши врачи</span>
+                </a>
+                <a href="{{ url_for('articles') }}" class="quick-link">
+                    <i class="fas fa-book"></i>
+                    <span>Полезные статьи</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Статистика сайта -->
+        <div class="site-stats">
+            <h3><i class="fas fa-chart-bar"></i> Статистика сайта</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Основных разделов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Страниц контента</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">Категорий услуг</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Врачей-специалистов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Статей и новостей</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Доступность</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Информация о сайте -->
+<section class="site-info bg-light">
+    <div class="container">
+        <div class="info-content">
+            <h3><i class="fas fa-info-circle"></i> Информация о сайте</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>Технологии</h4>
+                    <p>Сайт разработан с использованием современных технологий:</p>
+                    <ul>
+                        <li>Backend: Python Flask</li>
+                        <li>Frontend: HTML5, CSS3, JavaScript</li>
+                        <li>База данных: SQLite/PostgreSQL</li>
+                        <li>Фреймворк: Bootstrap 5</li>
+                        <li>Иконки: Font Awesome</li>
+                    </ul>
+                </div>
+                <div class="info-item">
+                    <h4>Доступность</h4>
+                    <p>Сайт соответствует требованиям доступности:</p>
+                    <ul>
+                        <li>ГОСТ Р 52872-2012 для слабовидящих</li>
+                        <li>Адаптивный дизайн</li>
+                        <li>Семантическая верстка</li>
+                        <li>Поддержка скринридеров</li>
+                        <li>Клавиатурная навигация</li>
+                    </ul>
+                </div>
+                <div class="info-item">
+                    <h4>Обновления</h4>
+                    <p>Сайт регулярно обновляется:</p>
+                    <ul>
+                        <li>Ежедневные новости</li>
+                        <li>Еженедельные статьи</li>
+                        <li>Обновление прайс-листа</li>
+                        <li>Добавление новых услуг</li>
+                        <li>Техническое обслуживание</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.sitemap-category {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.sitemap-category h2 {
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--light-color);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sitemap-category h2 i {
+    color: var(--primary-color);
+}
+
+.sitemap-list {
+    list-style: none;
+    padding: 0;
+}
+
+.sitemap-list > li {
+    margin-bottom: 20px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.sitemap-list > li:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.sitemap-list > li > a {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.sitemap-list > li > a:hover {
+    color: var(--primary-color);
+}
+
+.sitemap-list ul {
+    list-style: none;
+    padding-left: 40px;
+    margin-top: 10px;
+}
+
+.sitemap-list ul li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+    color: var(--gray);
+}
+
+.sitemap-list ul li:before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--gray-light);
+}
+
+.search-sitemap {
+    background: var(--light-color);
+    padding: 30px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.search-box {
+    display: flex;
+    gap: 0;
+    margin-bottom: 15px;
+}
+
+.search-box input {
+    flex-grow: 1;
+    padding: 15px 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px 0 0 10px;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+.search-box button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-box button:hover {
+    background: var(--primary-dark);
+}
+
+.quick-links-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 40px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.quick-links-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.quick-link {
+    background: var(--light-color);
+    padding: 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--dark-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.quick-link:hover {
+    background: white;
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+}
+
+.quick-link i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.quick-link span {
+    font-weight: 600;
+}
+
+.site-stats {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 40px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.site-stats h3 {
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 30px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    background: var(--light-color);
+    border-radius: 10px;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.site-info {
+    padding: 60px 0;
+}
+
+.info-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.info-item {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.info-item h4 {
+    color: var(--dark-color);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--light-color);
+}
+
+.info-item ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-item li {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.info-item li:before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: bold;
+}
+
+.bg-light {
+    background: var(--light-color);
+}
+
+@media (max-width: 768px) {
+    .sitemap-list > li {
+        padding-left: 15px;
+    }
+    
+    .sitemap-list ul {
+        padding-left: 20px;
+    }
+    
+    .quick-links-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .quick-links-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .search-box {
+        flex-direction: column;
+    }
+    
+    .search-box input {
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .search-box button {
+        border-radius: 10px;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

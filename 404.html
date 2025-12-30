@@ -1,0 +1,570 @@
+{% extends base_template %}
+
+{% block title %}Страница не найдена (404) - Ветеринарная клиника "Друг"{% endblock %}
+
+{% block content %}
+<!-- Основной контент страницы 404 -->
+<div class="error-page">
+    <div class="container">
+        <div class="error-content">
+            <div class="error-image">
+                <img src="{{ url_for('static', filename='images/404-error.png') }}" alt="Ошибка 404 - Страница не найдена">
+            </div>
+            
+            <div class="error-text">
+                <h1><span class="error-code">404</span> Страница не найдена</h1>
+                <p class="error-message">К сожалению, запрашиваемая вами страница не существует или была перемещена.</p>
+                
+                <div class="error-details">
+                    <p>Возможные причины:</p>
+                    <ul>
+                        <li>Вы ошиблись при вводе адреса страницы</li>
+                        <li>Страница была удалена или перемещена</li>
+                        <li>Ссылка, по которой вы перешли, устарела</li>
+                        <li>Произошла временная техническая ошибка</li>
+                    </ul>
+                </div>
+                
+                <div class="error-actions">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-home"></i> Вернуться на главную
+                    </a>
+                    <a href="javascript:history.back()" class="btn btn-outline btn-lg">
+                        <i class="fas fa-arrow-left"></i> Вернуться назад
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Поиск по сайту -->
+        <div class="error-search">
+            <h3>Найти нужную информацию</h3>
+            <p>Воспользуйтесь поиском по сайту или картой сайта:</p>
+            
+            <div class="search-container">
+                <form action="{{ url_for('search') }}" method="get">
+                    <div class="search-box-large">
+                        <input type="text" name="q" placeholder="Что вы ищете?" value="{{ request.args.get('q', '') }}">
+                        <button type="submit"><i class="fas fa-search"></i> Найти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Быстрые ссылки -->
+        <div class="quick-links-404">
+            <h3>Популярные разделы сайта</h3>
+            <div class="links-grid">
+                <a href="{{ url_for('services') }}" class="link-card">
+                    <i class="fas fa-stethoscope"></i>
+                    <span>Услуги и цены</span>
+                    <p>Ветеринарные услуги для ваших питомцев</p>
+                </a>
+                
+                <a href="{{ url_for('doctors') }}" class="link-card">
+                    <i class="fas fa-user-md"></i>
+                    <span>Наши врачи</span>
+                    <p>Квалифицированные специалисты</p>
+                </a>
+                
+                <a href="{{ url_for('contacts') }}" class="link-card">
+                    <i class="fas fa-address-book"></i>
+                    <span>Контакты</span>
+                    <p>Запись на прием и контакты</p>
+                </a>
+                
+                <a href="{{ url_for('articles') }}" class="link-card">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Полезные статьи</span>
+                    <p>Советы по уходу за питомцами</p>
+                </a>
+                
+                <a href="{{ url_for('news') }}" class="link-card">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Новости клиники</span>
+                    <p>Акции, события и обновления</p>
+                </a>
+                
+                <a href="{{ url_for('sitemap') }}" class="link-card">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Карта сайта</span>
+                    <p>Полная структура сайта</p>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Контактная информация -->
+        <div class="contact-info-404">
+            <div class="contact-card emergency">
+                <i class="fas fa-ambulance"></i>
+                <div>
+                    <h4>Экстренная помощь</h4>
+                    <p>Если вашему питомцу нужна срочная помощь</p>
+                    <a href="tel:+74957654321" class="emergency-phone">+7 (495) 765-43-21</a>
+                </div>
+            </div>
+            
+            <div class="contact-card main">
+                <i class="fas fa-phone"></i>
+                <div>
+                    <h4>Основной телефон</h4>
+                    <p>Для записи и консультаций</p>
+                    <a href="tel:+74951234567" class="main-phone">+7 (495) 123-45-67</a>
+                </div>
+            </div>
+            
+            <div class="contact-card address">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <h4>Адрес клиники</h4>
+                    <p>Москва, ул. Ветеринарная, 15</p>
+                    <small>Ежедневно 8:00-22:00</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Техническая поддержка -->
+        <div class="support-info">
+            <h3>Техническая поддержка</h3>
+            <p>Если вы считаете, что это ошибка сайта или у вас есть вопросы, свяжитесь с нами:</p>
+            <div class="support-options">
+                <a href="mailto:support@vetdrug.ru" class="support-option">
+                    <i class="fas fa-envelope"></i>
+                    <span>support@vetdrug.ru</span>
+                </a>
+                <a href="{{ url_for('contacts') }}" class="support-option">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Форма обратной связи</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.error-page {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: calc(100vh - 400px);
+}
+
+.error-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.error-image img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.error-text h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+}
+
+.error-code {
+    color: var(--danger);
+    font-weight: 900;
+    margin-right: 10px;
+}
+
+.error-message {
+    font-size: 1.3rem;
+    color: var(--gray);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.error-details {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.error-details p {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 15px;
+}
+
+.error-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.error-details li {
+    padding: 8px 0;
+    padding-left: 25px;
+    position: relative;
+    color: var(--gray);
+}
+
+.error-details li:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.error-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-lg {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+}
+
+.error-search {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.error-search h3 {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+}
+
+.error-search p {
+    color: var(--gray);
+    margin-bottom: 30px;
+}
+
+.search-box-large {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-box-large input {
+    flex-grow: 1;
+    padding: 18px 25px;
+    border: 3px solid var(--primary-color);
+    border-radius: 15px 0 0 15px;
+    font-size: 1.2rem;
+    outline: none;
+}
+
+.search-box-large button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 0 15px 15px 0;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.3s ease;
+}
+
+.search-box-large button:hover {
+    background: var(--primary-dark);
+}
+
+.quick-links-404 {
+    margin-bottom: 60px;
+}
+
+.quick-links-404 h3 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--dark-color);
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.link-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.link-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.link-card i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.link-card span {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.link-card p {
+    color: var(--gray);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.contact-info-404 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 60px;
+}
+
+.contact-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.contact-card.emergency {
+    border-top: 5px solid var(--danger);
+}
+
+.contact-card.main {
+    border-top: 5px solid var(--primary-color);
+}
+
+.contact-card.address {
+    border-top: 5px solid var(--success);
+}
+
+.contact-card i {
+    font-size: 2.5rem;
+    color: inherit;
+}
+
+.contact-card.emergency i {
+    color: var(--danger);
+}
+
+.contact-card.main i {
+    color: var(--primary-color);
+}
+
+.contact-card.address i {
+    color: var(--success);
+}
+
+.contact-card h4 {
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+.contact-card p {
+    color: var(--gray);
+    margin-bottom: 10px;
+}
+
+.emergency-phone {
+    display: inline-block;
+    background: var(--danger);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: background 0.3s ease;
+}
+
+.emergency-phone:hover {
+    background: #c82333;
+    color: white;
+}
+
+.main-phone {
+    display: inline-block;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.main-phone:hover {
+    color: var(--primary-dark);
+}
+
+.support-info {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.support-info h3 {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+}
+
+.support-info p {
+    color: var(--gray);
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.support-options {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.support-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 30px;
+    background: var(--light-color);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+}
+
+.support-option:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-5px);
+}
+
+.support-option:hover i {
+    color: white;
+}
+
+.support-option i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.support-option span {
+    font-weight: 600;
+}
+
+@media (max-width: 992px) {
+    .error-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .error-image img {
+        max-width: 400px;
+    }
+    
+    .error-actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .error-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    .search-box-large {
+        flex-direction: column;
+    }
+    
+    .search-box-large input {
+        border-radius: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .search-box-large button {
+        border-radius: 15px;
+        justify-content: center;
+    }
+    
+    .links-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-info-404 {
+        grid-template-columns: 1fr;
+    }
+    
+    .support-options {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .support-option {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .error-page {
+        padding: 40px 0;
+    }
+    
+    .error-content {
+        gap: 40px;
+    }
+    
+    .error-text h1 {
+        font-size: 2rem;
+    }
+    
+    .error-message {
+        font-size: 1.1rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .error-actions .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

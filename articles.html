@@ -1,0 +1,1373 @@
+{% extends base_template %}
+
+{% block title %}Полезные статьи - Ветеринарная клиника "Друг"{% endblock %}
+
+{% block content %}
+<!-- Заголовок страницы -->
+<div class="page-header">
+    <div class="container">
+        <h1>Полезные статьи</h1>
+        <p>Советы по уходу, лечению и содержанию домашних животных</p>
+    </div>
+</div>
+
+<!-- Отладочная информация (удалить после отладки) -->
+{% if False %} <!-- Установите в True для отладки -->
+<div class="container debug-info" style="background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-radius: 10px;">
+    <h3>Отладочная информация:</h3>
+    <p>Количество статей: {{ articles|length if articles else 0 }}</p>
+    <p>Категории: 
+        {% if categories %}
+            {% for cat in categories %}
+                "{{ cat }}"{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        {% else %}
+            Нет категорий
+        {% endif %}
+    </p>
+    {% if articles and articles|length > 0 %}
+        <p>Первая статья:</p>
+        <ul>
+            <li>ID: {{ articles[0].id }}</li>
+            <li>Заголовок: {{ articles[0].title }}</li>
+            <li>Категория: {{ articles[0].category }}</li>
+            <li>Длина контента: {{ articles[0].content|length if articles[0].content else 0 }}</li>
+            <li>Контент (первые 100 символов): {{ articles[0].content[:100] if articles[0].content else 'Нет контента' }}</li>
+        </ul>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Категории статей -->
+<section class="categories-section">
+    <div class="container">
+        <div class="categories-filter">
+            <h3>Категории статей</h3>
+            <div class="category-buttons">
+                <button class="cat-btn active" data-category="all">Все статьи</button>
+                {% if categories %}
+                    {% for category in categories %}
+                        {% if category and category is string %}
+                            <button class="cat-btn" data-category="{{ category }}">{{ category }}</button>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="search-articles">
+            <div class="search-box">
+                <input type="text" id="articleSearch" placeholder="Поиск по статьям...">
+                <button type="button" id="searchButton">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="sort-options">
+                <select id="sortArticles">
+                    <option value="newest">Сначала новые</option>
+                    <option value="oldest">Сначала старые</option>
+                    <option value="popular">По популярности</option>
+                    <option value="title">По алфавиту</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Список статей -->
+<section class="articles-list">
+    <div class="container">
+        <div class="articles-container">
+            {% if articles and articles|length > 0 %}
+                {% for article in articles %}
+                <article class="article-card" data-category="{{ article.category if article.category else 'Без категории' }}" 
+                         data-date="{{ article.created_at.timestamp() if article.created_at else 0 }}"
+                         data-views="{{ article.views if article.views else 0 }}"
+                         data-title="{{ article.title|lower if article.title else '' }}">
+                    <div class="article-image">
+                        {% if article.image_url %}
+                            <img src="{{ url_for('static', filename=article.image_url) }}" alt="{{ article.title }}" 
+                                 onerror="this.src='{{ url_for('static', filename='images/misc/default-article.jpg') }}'; this.onerror=null;">
+                        {% else %}
+                            <div class="article-image-placeholder">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                        {% endif %}
+                        {% if article.category and article.category is string and article.category|length > 0 %}
+                            <span class="article-category">{{ article.category }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">
+                                <i class="far fa-calendar"></i>
+                                {% if article.created_at %}
+                                    {{ article.created_at.strftime('%d.%m.%Y') }}
+                                {% else %}
+                                    Дата не указана
+                                {% endif %}
+                            </span>
+                            <span class="article-views">
+                                <i class="far fa-eye"></i>
+                                {{ article.views if article.views else 0 }} просмотров
+                            </span>
+                            <span class="article-readtime">
+                                <i class="far fa-clock"></i>
+                                {% if article.content and article.content|length > 0 %}
+                                    {{ ((article.content|length) // 1200) + 1 }} мин. чтения
+                                {% else %}
+                                    1 мин. чтения
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <h2 class="article-title">
+                            {% if article.title %}
+                                {{ article.title }}
+                            {% else %}
+                                Без названия
+                            {% endif %}
+                        </h2>
+                        
+                        <div class="article-excerpt">
+                            <p>
+                                {% if article.content and article.content|length > 0 %}
+                                    {{ article.content[:200]|striptags }}...
+                                {% else %}
+                                    <em>Содержание статьи отсутствует</em>
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <div class="article-actions">
+                            <a href="{{ url_for('article_detail', article_id=article.id) if article.id else '#' }}" 
+                               class="btn btn-primary"
+                               {% if not article.id %}style="pointer-events: none; opacity: 0.5;"{% endif %}>
+                                Читать полностью
+                            </a>
+                            <div class="article-share">
+                                <span>Поделиться:</span>
+                                <a href="#" class="share-btn" data-platform="vk"><i class="fab fa-vk"></i></a>
+                                <a href="#" class="share-btn" data-platform="telegram"><i class="fab fa-telegram"></i></a>
+                                <a href="#" class="share-btn" data-platform="twitter"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <!-- Сообщение, если статьи не найдены -->
+                <div id="noArticlesMessage" class="no-articles" style="display: block;">
+                    <div class="no-articles-content">
+                        <i class="fas fa-search fa-3x"></i>
+                        <h3>Статьи не найдены</h3>
+                        <p>Попробуйте изменить параметры поиска или выбрать другую категорию</p>
+                        <button id="resetFilters" class="btn btn-primary">Сбросить фильтры</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Пагинация -->
+        {% if articles and articles|length > 0 %}
+        <div class="pagination">
+            <button class="page-btn prev" disabled>
+                <i class="fas fa-chevron-left"></i> Назад
+            </button>
+            
+            <div class="page-numbers">
+                <button class="page-number active">1</button>
+                {% if articles|length > 5 %}
+                <button class="page-number">2</button>
+                <button class="page-number">3</button>
+                <span class="page-dots">...</span>
+                <button class="page-number">{{ ((articles|length) // 5) + 1 }}</button>
+                {% endif %}
+            </div>
+            
+            <button class="page-btn next" {% if articles|length <= 5 %}disabled{% endif %}>
+                Вперед <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Популярные статьи -->
+{% if articles and articles|length > 0 %}
+<section class="popular-articles bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Самые популярные статьи</h2>
+            <p class="section-subtitle">Читают чаще всего</p>
+        </div>
+        
+        <div class="popular-grid">
+            {% set sorted_articles = articles|sort(attribute='views', reverse=True) %}
+            {% for i in range([4, articles|length]|min) %}
+                {% set article = sorted_articles[i] %}
+                {% if article %}
+                <div class="popular-card">
+                    <div class="popular-rank">#{{ loop.index }}</div>
+                    <div class="popular-image">
+                        {% if article.image_url %}
+                            <img src="{{ url_for('static', filename=article.image_url) }}" alt="{{ article.title }}"
+                                 onerror="this.src='{{ url_for('static', filename='images/misc/default-article.jpg') }}'; this.onerror=null;">
+                        {% else %}
+                            <div class="article-image-placeholder">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="popular-content">
+                        <h3>{{ article.title if article.title else 'Без названия' }}</h3>
+                        <div class="popular-meta">
+                            <span class="popular-category">{{ article.category if article.category else 'Без категории' }}</span>
+                            <span class="popular-views">
+                                <i class="far fa-eye"></i> {{ article.views if article.views else 0 }}
+                            </span>
+                        </div>
+                        <a href="{{ url_for('article_detail', article_id=article.id) if article.id else '#' }}" 
+                           class="read-link"
+                           {% if not article.id %}style="pointer-events: none; opacity: 0.5;"{% endif %}>
+                            Читать статью →
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Авторы статей -->
+<section class="authors-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Наши авторы</h2>
+            <p class="section-subtitle">Профессиональные ветеринары и зоологи</p>
+        </div>
+        
+        <div class="authors-grid">
+            <div class="author-card">
+                <div class="author-avatar">
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                </div>
+                <h3>Иванова Анна Сергеевна</h3>
+                <p class="author-title">Ветеринар-терапевт</p>
+                <p class="author-bio">Специалист по внутренним болезням. Автор более 50 научных статей.</p>
+                <div class="author-stats">
+                    <span>Статей: 12</span>
+                    <span>Опыт: 10 лет</span>
+                </div>
+            </div>
+            
+            <div class="author-card">
+                <div class="author-avatar">
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                </div>
+                <h3>Петров Игорь Владимирович</h3>
+                <p class="author-title">Ветеринар-хирург</p>
+                <p class="author-bio">Специалист по ортопедии и травматологии. Провел более 1000 операций.</p>
+                <div class="author-stats">
+                    <span>Статей: 8</span>
+                    <span>Опыт: 15 лет</span>
+                </div>
+            </div>
+            
+            <div class="author-card">
+                <div class="author-avatar">
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                </div>
+                <h3>Смирнова Ольга Александровна</h3>
+                <p class="author-title">Ветеринар-дерматолог</p>
+                <p class="author-bio">Специалист по кожным заболеваниям. Эксперт в области аллергологии.</p>
+                <div class="author-stats">
+                    <span>Статей: 6</span>
+                    <span>Опыт: 8 лет</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Рекомендации -->
+<section class="recommendations bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Что почитать дальше?</h2>
+            <p class="section-subtitle">Рекомендуемые материалы</p>
+        </div>
+        
+        <div class="recommendations-tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="new">Новое</button>
+                <button class="tab-btn" data-tab="useful">Полезное</button>
+                <button class="tab-btn" data-tab="seasonal">Сезонное</button>
+            </div>
+            
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab-new">
+                    <div class="recommendations-grid">
+                        <div class="rec-card">
+                            <h3>Новые технологии в ветеринарии</h3>
+                            <p>Как современные технологии меняют подход к лечению животных</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                        <div class="rec-card">
+                            <h3>Питание пожилых животных</h3>
+                            <p>Особенности рациона для животных старше 7 лет</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                        <div class="rec-card">
+                            <h3>Профилактика зубного камня</h3>
+                            <p>Эффективные методы предотвращения стоматологических проблем</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane" id="tab-useful">
+                    <div class="recommendations-grid">
+                        <div class="rec-card">
+                            <h3>Первая помощь при отравлении</h3>
+                            <p>Что делать, если питомец съел что-то опасное</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                        <div class="rec-card">
+                            <h3>Как правильно выбрать корм</h3>
+                            <p>Руководство по выбору качественного питания</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                        <div class="rec-card">
+                            <h3>Уход за шерстью длинношерстных кошек</h3>
+                            <p>Профессиональные советы грумеров</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane" id="tab-seasonal">
+                    <div class="recommendations-grid">
+                        <div class="rec-card">
+                            <h3>Летние опасности для питомцев</h3>
+                            <p>Как защитить животное в жаркую погоду</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                        <div class="rec-card">
+                            <h3>Подготовка к зиме</h3>
+                            <p>Что нужно знать владельцу перед холодным сезоном</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                        <div class="rec-card">
+                            <h3>Весенняя линька</h3>
+                            <p>Как помочь питомцу пережить сезонную линьку</p>
+                            <a href="#" class="rec-link">Читать →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Подписка на новости -->
+<section class="subscribe-section">
+    <div class="container">
+        <div class="subscribe-content">
+            <div class="subscribe-text">
+                <h2>Подпишитесь на новые статьи</h2>
+                <p>Получайте полезные материалы и советы по уходу за питомцами на почту</p>
+            </div>
+            
+            <form class="subscribe-form" id="subscribeForm">
+                <div class="form-group">
+                    <input type="email" placeholder="Ваш email" required>
+                    <button type="submit" class="btn btn-primary">Подписаться</button>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="subscribeAgree" required>
+                    <label for="subscribeAgree">
+                        Соглашаюсь на обработку персональных данных
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.categories-section {
+    background: white;
+    padding: 40px 0;
+    border-bottom: 1px solid var(--gray-light);
+    margin-bottom: 30px;
+}
+
+.categories-filter h3 {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+}
+
+.category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.cat-btn {
+    padding: 10px 25px;
+    border: 2px solid var(--gray-light);
+    background: white;
+    color: var(--gray);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.cat-btn:hover,
+.cat-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.search-articles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-box {
+    flex-grow: 1;
+    display: flex;
+    max-width: 500px;
+}
+
+.search-box input {
+    flex-grow: 1;
+    padding: 12px 20px;
+    border: 2px solid var(--gray-light);
+    border-radius: 30px 0 0 30px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-box button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0 30px;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.sort-options select {
+    padding: 12px 20px;
+    border: 2px solid var(--gray-light);
+    border-radius: 30px;
+    background: white;
+    font-size: 1rem;
+    color: var(--dark-color);
+    outline: none;
+    cursor: pointer;
+}
+
+.article-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--light-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-light);
+    font-size: 2rem;
+}
+
+.article-card {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+    background: white;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+}
+
+.article-image {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 200px;
+}
+
+.article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-category {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--primary-color);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.article-meta {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.article-meta i {
+    margin-right: 5px;
+}
+
+.article-title {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.article-excerpt {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+.article-excerpt p {
+    margin: 0;
+}
+
+.article-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-light);
+}
+
+.article-share {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.article-share span {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--light-color);
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.share-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.no-articles {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.no-articles-content i {
+    color: var(--gray-light);
+    margin-bottom: 20px;
+}
+
+.no-articles-content h3 {
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.no-articles-content p {
+    color: var(--gray);
+    margin-bottom: 30px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 50px;
+}
+
+.page-btn {
+    padding: 10px 20px;
+    border: 2px solid var(--gray-light);
+    background: white;
+    color: var(--dark-color);
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 5px;
+}
+
+.page-number {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--gray-light);
+    background: white;
+    color: var(--dark-color);
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.page-number:hover,
+.page-number.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.page-dots {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    color: var(--gray);
+}
+
+.popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.popular-card {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.popular-card:hover {
+    transform: translateY(-5px);
+}
+
+.popular-rank {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    background: var(--warning);
+    color: var(--dark-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.popular-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.popular-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.popular-content h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+.popular-meta {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.popular-category {
+    background: var(--light-color);
+    color: var(--primary-color);
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-weight: 600;
+}
+
+.popular-views {
+    color: var(--gray);
+}
+
+.read-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.read-link:hover {
+    text-decoration: underline;
+}
+
+.authors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.author-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.author-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    border: 5px solid var(--light-color);
+    background: var(--light-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-placeholder {
+    font-size: 3rem;
+    color: var(--primary-color);
+}
+
+.author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.author-card h3 {
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.author-title {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.author-bio {
+    color: var(--gray);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.author-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-light);
+}
+
+.author-stats span {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.recommendations-tabs {
+    margin-top: 40px;
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tab-btn {
+    padding: 12px 30px;
+    border: 2px solid var(--gray-light);
+    background: white;
+    color: var(--dark-color);
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover,
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.rec-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.rec-card h3 {
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.rec-card p {
+    color: var(--gray);
+    margin-bottom: 15px;
+}
+
+.rec-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.rec-link:hover {
+    text-decoration: underline;
+}
+
+.subscribe-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: 60px 0;
+    margin-top: 60px;
+}
+
+.subscribe-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+}
+
+.subscribe-text h2 {
+    color: white;
+    margin-bottom: 15px;
+}
+
+.subscribe-text p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.subscribe-form {
+    flex-shrink: 0;
+    min-width: 400px;
+}
+
+.subscribe-form .form-group {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.subscribe-form input {
+    flex-grow: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 30px 0 0 30px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.subscribe-form button {
+    background: var(--dark-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.subscribe-form button:hover {
+    background: #1a1a1a;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.form-check input {
+    width: 18px;
+    height: 18px;
+}
+
+/* Отладочная информация */
+.debug-info {
+    background: #f8f9fa;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.debug-info h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.debug-info ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.debug-info li {
+    margin-bottom: 5px;
+}
+
+@media (max-width: 992px) {
+    .article-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .article-image {
+        height: 250px;
+    }
+    
+    .subscribe-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .subscribe-form {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-articles {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        max-width: 100%;
+    }
+    
+    .category-buttons {
+        justify-content: center;
+    }
+    
+    .article-actions {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+    
+    .article-share {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Articles page loaded');
+    
+    // Проверяем, есть ли статьи
+    const articleCards = document.querySelectorAll('.article-card');
+    console.log('Found ' + articleCards.length + ' article cards');
+    
+    // Фильтрация по категориям
+    const catButtons = document.querySelectorAll('.cat-btn');
+    
+    catButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Убираем активный класс у всех кнопок
+            catButtons.forEach(btn => btn.classList.remove('active'));
+            // Добавляем активный класс текущей кнопке
+            this.classList.add('active');
+            
+            const category = this.dataset.category;
+            console.log('Selected category: ' + category);
+            
+            // Показываем/скрываем статьи
+            filterArticles(category);
+        });
+    });
+    
+    // Поиск по статьям
+    const searchInput = document.getElementById('articleSearch');
+    const searchButton = document.getElementById('searchButton');
+    
+    function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        const activeCategory = document.querySelector('.cat-btn.active').dataset.category;
+        
+        console.log('Search query: ' + query + ', category: ' + activeCategory);
+        filterArticles(activeCategory, query);
+    }
+    
+    searchInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+    
+    searchButton.addEventListener('click', performSearch);
+    
+    // Сортировка статей
+    const sortSelect = document.getElementById('sortArticles');
+    
+    sortSelect.addEventListener('change', function() {
+        const sortBy = this.value;
+        console.log('Sort by: ' + sortBy);
+        sortArticles(sortBy);
+    });
+    
+    // Функция фильтрации статей
+    function filterArticles(category, searchQuery = '') {
+        let visibleCount = 0;
+        
+        articleCards.forEach(card => {
+            const cardCategory = card.dataset.category;
+            const cardTitle = card.dataset.title || '';
+            const cardText = card.querySelector('.article-excerpt p').textContent.toLowerCase();
+            
+            const categoryMatch = category === 'all' || cardCategory === category;
+            const searchMatch = !searchQuery || 
+                               cardTitle.includes(searchQuery) || 
+                               cardText.includes(searchQuery);
+            
+            if (categoryMatch && searchMatch) {
+                card.style.display = 'grid';
+                visibleCount++;
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.display = 'none';
+                }, 300);
+            }
+        });
+        
+        console.log('Visible articles: ' + visibleCount);
+        
+        // Показываем/скрываем сообщение "Статьи не найдены"
+        const noArticlesMessage = document.getElementById('noArticlesMessage');
+        if (visibleCount === 0) {
+            if (noArticlesMessage) noArticlesMessage.style.display = 'block';
+        } else {
+            if (noArticlesMessage) noArticlesMessage.style.display = 'none';
+        }
+    }
+    
+    // Функция сортировки статей
+    function sortArticles(sortBy) {
+        const container = document.querySelector('.articles-container');
+        const cards = Array.from(articleCards);
+        
+        cards.sort((a, b) => {
+            switch(sortBy) {
+                case 'newest':
+                    return parseFloat(b.dataset.date) - parseFloat(a.dataset.date);
+                case 'oldest':
+                    return parseFloat(a.dataset.date) - parseFloat(b.dataset.date);
+                case 'popular':
+                    return parseInt(b.dataset.views) - parseInt(a.dataset.views);
+                case 'title':
+                    return (a.dataset.title || '').localeCompare(b.dataset.title || '');
+                default:
+                    return 0;
+            }
+        });
+        
+        // Перемещаем карточки в новом порядке
+        cards.forEach(card => {
+            container.appendChild(card);
+        });
+        
+        console.log('Articles sorted by ' + sortBy);
+    }
+    
+    // Сброс фильтров
+    const resetButton = document.getElementById('resetFilters');
+    if (resetButton) {
+        resetButton.addEventListener('click', function() {
+            catButtons.forEach(btn => {
+                if (btn.dataset.category === 'all') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            searchInput.value = '';
+            sortSelect.value = 'newest';
+            
+            filterArticles('all');
+            sortArticles('newest');
+            
+            console.log('Filters reset');
+        });
+    }
+    
+    // Поделиться в соцсетях
+    const shareButtons = document.querySelectorAll('.share-btn');
+    
+    shareButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const platform = this.dataset.platform;
+            const url = window.location.href;
+            const title = document.title;
+            
+            let shareUrl = '';
+            
+            switch(platform) {
+                case 'vk':
+                    shareUrl = `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+                    break;
+                case 'telegram':
+                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+                    break;
+            }
+            
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        });
+    });
+    
+    // Пагинация (если есть статьи)
+    if (articleCards.length > 0) {
+        const pageNumbers = document.querySelectorAll('.page-number');
+        const prevButton = document.querySelector('.page-btn.prev');
+        const nextButton = document.querySelector('.page-btn.next');
+        
+        let currentPage = 1;
+        const articlesPerPage = 5;
+        const totalArticles = articleCards.length;
+        const totalPages = Math.ceil(totalArticles / articlesPerPage);
+        
+        function updatePagination() {
+            // Обновляем активную страницу
+            if (pageNumbers) {
+                pageNumbers.forEach((number, index) => {
+                    if (index + 1 === currentPage) {
+                        number.classList.add('active');
+                    } else {
+                        number.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Обновляем состояние кнопок
+            if (prevButton) prevButton.disabled = currentPage === 1;
+            if (nextButton) nextButton.disabled = currentPage === totalPages;
+            
+            // Показываем/скрываем статьи постранично
+            articleCards.forEach((card, index) => {
+                const page = Math.floor(index / articlesPerPage) + 1;
+                if (page === currentPage) {
+                    card.style.display = 'grid';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        if (pageNumbers && pageNumbers.length > 0) {
+            pageNumbers.forEach(number => {
+                number.addEventListener('click', function() {
+                    currentPage = parseInt(this.textContent);
+                    updatePagination();
+                });
+            });
+        }
+        
+        if (prevButton) {
+            prevButton.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                }
+            });
+        }
+        
+        if (nextButton) {
+            nextButton.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+        }
+        
+        // Инициализируем пагинацию
+        updatePagination();
+    }
+    
+    // Вкладки рекомендаций
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tabId = this.dataset.tab;
+            
+            // Убираем активный класс у всех кнопок и панелей
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            
+            // Добавляем активный класс текущей кнопке и соответствующей панели
+            this.classList.add('active');
+            const tabPane = document.getElementById(`tab-${tabId}`);
+            if (tabPane) tabPane.classList.add('active');
+        });
+    });
+    
+    // Подписка на новости
+    const subscribeForm = document.getElementById('subscribeForm');
+    
+    if (subscribeForm) {
+        subscribeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const emailInput = this.querySelector('input[type="email"]');
+            const email = emailInput ? emailInput.value : '';
+            const agreeCheckbox = this.querySelector('input[type="checkbox"]');
+            const agree = agreeCheckbox ? agreeCheckbox.checked : false;
+            
+            if (!agree) {
+                alert('Пожалуйста, согласитесь на обработку персональных данных');
+                return;
+            }
+            
+            // Здесь можно добавить отправку данных на сервер
+            alert(`Спасибо за подписку! На адрес ${email} будут приходить новые статьи.`);
+            this.reset();
+        });
+    }
+    
+    // Если нужно включить отладочную информацию, измените значение в шаблоне
+    const debugInfo = document.querySelector('.debug-info');
+    if (debugInfo) {
+        console.log('Debug info available');
+    }
+});
+</script>
+{% endblock %}

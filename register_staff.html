@@ -1,0 +1,1177 @@
+{% extends base_template %}
+
+{% block title %}Регистрация сотрудника - Панель администратора{% endblock %}
+
+{% block content %}
+<!-- Заголовок страницы -->
+<div class="page-header">
+    <div class="container">
+        <h1>Регистрация сотрудника</h1>
+        <p>Создание учетной записи для сотрудников клиники</p>
+    </div>
+</div>
+
+<!-- Информация для администратора -->
+<section class="admin-info">
+    <div class="container">
+        <div class="info-alert">
+            <div class="alert-content">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h3>Административный раздел</h3>
+                    <p>Вы находитесь в разделе создания учетных записей для сотрудников клиники. Все созданные учетные записи будут автоматически активированы.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Форма регистрации сотрудника -->
+<section class="staff-registration">
+    <div class="container">
+        <div class="registration-container">
+            <!-- Основная форма -->
+            <div class="registration-form-card">
+                <div class="form-header">
+                    <h2><i class="fas fa-user-tie"></i> Данные сотрудника</h2>
+                    <p>Заполните информацию о новом сотруднике</p>
+                </div>
+                
+                <form action="{{ url_for('register_staff') }}" method="post" id="staffForm">
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-circle"></i> Личная информация</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="full_name" class="form-label required">
+                                    <i class="fas fa-user"></i> ФИО сотрудника
+                                </label>
+                                <input type="text" 
+                                       id="full_name" 
+                                       name="full_name" 
+                                       class="form-control" 
+                                       placeholder="Иванов Иван Иванович" 
+                                       required>
+                                <div class="form-hint">Полное имя сотрудника</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="position" class="form-label required">
+                                    <i class="fas fa-briefcase"></i> Должность
+                                </label>
+                                <select id="position" name="position" class="form-control" required>
+                                    <option value="">Выберите должность</option>
+                                    <option value="Ветеринарный врач">Ветеринарный врач</option>
+                                    <option value="Хирург">Хирург</option>
+                                    <option value="Терапевт">Терапевт</option>
+                                    <option value="Ассистент врача">Ассистент врача</option>
+                                    <option value="Администратор">Администратор</option>
+                                    <option value="Медсестра">Медсестра</option>
+                                    <option value="Лаборант">Лаборант</option>
+                                    <option value="Грумер">Грумер</option>
+                                </select>
+                                <div class="form-hint">Основная должность сотрудника</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="specialization" class="form-label">
+                                    <i class="fas fa-stethoscope"></i> Специализация
+                                </label>
+                                <input type="text" 
+                                       id="specialization" 
+                                       name="specialization" 
+                                       class="form-control" 
+                                       placeholder="Хирургия, терапия, дерматология...">
+                                <div class="form-hint">Основные направления работы</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="department" class="form-label">
+                                    <i class="fas fa-building"></i> Отдел
+                                </label>
+                                <select id="department" name="department" class="form-control">
+                                    <option value="">Выберите отдел</option>
+                                    <option value="Терапия">Терапия</option>
+                                    <option value="Хирургия">Хирургия</option>
+                                    <option value="Диагностика">Диагностика</option>
+                                    <option value="Стоматология">Стоматология</option>
+                                    <option value="Лаборатория">Лаборатория</option>
+                                    <option value="Администрация">Администрация</option>
+                                    <option value="Груминг">Груминг</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3><i class="fas fa-key"></i> Учетные данные</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="username" class="form-label required">
+                                    <i class="fas fa-at"></i> Логин
+                                </label>
+                                <input type="text" 
+                                       id="username" 
+                                       name="username" 
+                                       class="form-control" 
+                                       placeholder="ivanov.i" 
+                                       required>
+                                <div class="form-hint">Латинские буквы, цифры и точки</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email" class="form-label required">
+                                    <i class="fas fa-envelope"></i> Рабочий email
+                                </label>
+                                <input type="email" 
+                                       id="email" 
+                                       name="email" 
+                                       class="form-control" 
+                                       placeholder="ivanov@vetclinic.ru" 
+                                       required>
+                                <div class="form-hint">Корпоративная почта сотрудника</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password" class="form-label required">
+                                    <i class="fas fa-lock"></i> Пароль
+                                </label>
+                                <div class="password-input">
+                                    <input type="password" 
+                                           id="password" 
+                                           name="password" 
+                                           class="form-control" 
+                                           placeholder="Сгенерировать пароль" 
+                                           required
+                                           minlength="8">
+                                    <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="generate-password" onclick="generatePassword()">
+                                        <i class="fas fa-random"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="strength-bar">
+                                        <div class="strength-fill" id="strengthFill"></div>
+                                    </div>
+                                    <span class="strength-text" id="strengthText">Надежность пароля</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm_password" class="form-label required">
+                                    <i class="fas fa-lock"></i> Подтверждение
+                                </label>
+                                <div class="password-input">
+                                    <input type="password" 
+                                           id="confirm_password" 
+                                           name="confirm_password" 
+                                           class="form-control" 
+                                           placeholder="Повторите пароль" 
+                                           required>
+                                    <button type="button" class="toggle-password" onclick="togglePassword('confirm_password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-hint">Пароли должны совпадать</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-shield"></i> Права доступа</h3>
+                        
+                        <div class="permissions-grid">
+                            <div class="permission-card">
+                                <div class="permission-header">
+                                    <h4>Роль в системе</h4>
+                                    <p>Определите уровень доступа сотрудника</p>
+                                </div>
+                                
+                                <div class="role-selection">
+                                    <div class="role-option">
+                                        <input type="radio" name="role" id="role_staff" value="staff" checked>
+                                        <label for="role_staff" class="role-label">
+                                            <i class="fas fa-user-md"></i>
+                                            <div>
+                                                <strong>Сотрудник</strong>
+                                                <span>Доступ к расписанию и пациентам</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="role-option">
+                                        <input type="radio" name="role" id="role_admin" value="admin">
+                                        <label for="role_admin" class="role-label">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <div>
+                                                <strong>Администратор</strong>
+                                                <span>Полный доступ ко всем функциям</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="permission-card">
+                                <div class="permission-header">
+                                    <h4>Дополнительные права</h4>
+                                    <p>Настройка специальных возможностей</p>
+                                </div>
+                                
+                                <div class="permission-options">
+                                    <label class="permission-option">
+                                        <input type="checkbox" name="can_edit_schedule" id="can_edit_schedule" checked>
+                                        <span class="permission-checkmark"></span>
+                                        <span class="permission-text">
+                                            <strong>Редактирование расписания</strong>
+                                            <span>Изменение рабочих часов и графиков</span>
+                                        </span>
+                                    </label>
+                                    
+                                    <label class="permission-option">
+                                        <input type="checkbox" name="can_view_reports" id="can_view_reports" checked>
+                                        <span class="permission-checkmark"></span>
+                                        <span class="permission-text">
+                                            <strong>Просмотр отчетов</strong>
+                                            <span>Доступ к статистике и аналитике</span>
+                                        </span>
+                                    </label>
+                                    
+                                    <label class="permission-option">
+                                        <input type="checkbox" name="can_manage_content" id="can_manage_content">
+                                        <span class="permission-checkmark"></span>
+                                        <span class="permission-text">
+                                            <strong>Управление контентом</strong>
+                                            <span>Добавление статей и новостей</span>
+                                        </span>
+                                    </label>
+                                    
+                                    <label class="permission-option">
+                                        <input type="checkbox" name="can_manage_users" id="can_manage_users">
+                                        <span class="permission-checkmark"></span>
+                                        <span class="permission-text">
+                                            <strong>Управление пользователями</strong>
+                                            <span>Регистрация новых сотрудников</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3><i class="fas fa-calendar-alt"></i> Рабочий график</h3>
+                        
+                        <div class="schedule-setup">
+                            <div class="schedule-presets">
+                                <h4>Стандартные графики:</h4>
+                                <div class="preset-buttons">
+                                    <button type="button" class="preset-btn" data-schedule="Пн-Пт 9:00-18:00">
+                                        5/2 (9:00-18:00)
+                                    </button>
+                                    <button type="button" class="preset-btn" data-schedule="Пн-Сб 8:00-20:00">
+                                        6/1 (8:00-20:00)
+                                    </button>
+                                    <button type="button" class="preset-btn" data-schedule="Сменный график">
+                                        Сменный график
+                                    </button>
+                                    <button type="button" class="preset-btn" data-schedule="Индивидуальный">
+                                        Индивидуальный
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="schedule-input">
+                                <label for="work_schedule" class="form-label">
+                                    <i class="fas fa-clock"></i> Расписание работы
+                                </label>
+                                <textarea id="work_schedule" 
+                                          name="work_schedule" 
+                                          class="form-control" 
+                                          rows="3" 
+                                          placeholder="Например: Пн-Пт 9:00-18:00, Сб 10:00-16:00"></textarea>
+                                <div class="form-hint">Опишите рабочий график сотрудника</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i> Назад
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-user-plus"></i> Зарегистрировать сотрудника
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Информационная панель -->
+            <div class="info-panel">
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Инструкция</h3>
+                    <div class="info-content">
+                        <p>Для создания учетной записи сотрудника:</p>
+                        <ol>
+                            <li>Заполните личную информацию</li>
+                            <li>Задайте учетные данные</li>
+                            <li>Назначьте права доступа</li>
+                            <li>Укажите рабочий график</li>
+                            <li>Нажмите "Зарегистрировать"</li>
+                        </ol>
+                        <p>Сотрудник получит уведомление на email с данными для входа.</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Важная информация</h3>
+                    <div class="info-content">
+                        <ul>
+                            <li>Пароль должен быть не менее 8 символов</li>
+                            <li>Email должен быть корпоративным</li>
+                            <li>Роль "Администратор" дает полный доступ</li>
+                            <li>График работы можно настроить позже</li>
+                            <li>Сотрудник сможет сменить пароль при первом входе</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-history"></i> Недавно созданные</h3>
+                    <div class="recent-staff">
+                        <div class="staff-item">
+                            <div class="staff-avatar">АИ</div>
+                            <div class="staff-info">
+                                <strong>Анна Иванова</strong>
+                                <span>Ветеринарный врач</span>
+                                <small>Создано: 15.04.2024</small>
+                            </div>
+                        </div>
+                        
+                        <div class="staff-item">
+                            <div class="staff-avatar">ПС</div>
+                            <div class="staff-info">
+                                <strong>Петр Сидоров</strong>
+                                <span>Хирург</span>
+                                <small>Создано: 10.04.2024</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card emergency">
+                    <h3><i class="fas fa-envelope"></i> Отправить приглашение</h3>
+                    <div class="info-content">
+                        <p>После регистрации вы можете отправить приветственное письмо с инструкциями.</p>
+                        <button class="btn btn-light btn-block" id="sendInvite">
+                            <i class="fas fa-paper-plane"></i> Отправить приглашение
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.admin-info {
+    margin-bottom: 40px;
+}
+
+.info-alert {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #856404;
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 5px solid #856404;
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.alert-content i {
+    font-size: 2.5rem;
+}
+
+.alert-content h3 {
+    margin-bottom: 10px;
+    color: #856404;
+}
+
+.registration-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.registration-form-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.form-header {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--light-color);
+}
+
+.form-header h2 {
+    color: var(--dark-color);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.form-header p {
+    color: var(--gray);
+}
+
+.form-section {
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.form-section h3 {
+    color: var(--dark-color);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.form-label.required:after {
+    content: '*';
+    color: var(--danger);
+    margin-left: 5px;
+}
+
+.form-label i {
+    color: var(--primary-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid var(--gray-light);
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+}
+
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236C757D'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 20px;
+    padding-right: 50px;
+}
+
+.password-input {
+    position: relative;
+}
+
+.toggle-password,
+.generate-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.generate-password {
+    right: 45px;
+}
+
+.password-strength {
+    margin-top: 10px;
+}
+
+.strength-bar {
+    height: 6px;
+    background: var(--gray-light);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--danger);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.strength-fill.weak {
+    width: 33%;
+    background: var(--danger);
+}
+
+.strength-fill.medium {
+    width: 66%;
+    background: var(--warning);
+}
+
+.strength-fill.strong {
+    width: 100%;
+    background: var(--success);
+}
+
+.strength-text {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.permissions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.permission-card {
+    background: var(--light-color);
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.permission-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.permission-header h4 {
+    color: var(--dark-color);
+    margin-bottom: 5px;
+}
+
+.permission-header p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.role-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.role-option input {
+    display: none;
+}
+
+.role-label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border: 2px solid var(--gray-light);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.role-option input:checked + .role-label {
+    border-color: var(--primary-color);
+    background: rgba(42, 157, 143, 0.1);
+}
+
+.role-label i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.role-label strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.role-label span {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.permission-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.permission-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    cursor: pointer;
+}
+
+.permission-checkmark {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray-light);
+    border-radius: 4px;
+    margin-top: 3px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.permission-option input:checked + .permission-checkmark {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.permission-option input:checked + .permission-checkmark:after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 0.9rem;
+}
+
+.permission-text {
+    flex-grow: 1;
+}
+
+.permission-text strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.permission-text span {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.schedule-setup {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.schedule-presets h4 {
+    margin-bottom: 15px;
+    color: var(--dark-color);
+}
+
+.preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.preset-btn {
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid var(--gray-light);
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid var(--light-color);
+}
+
+.btn-outline {
+    border: 2px solid var(--gray-light);
+    background: white;
+    color: var(--gray);
+    padding: 12px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-lg {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+}
+
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.info-card h3 {
+    color: var(--dark-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.info-card h3 i {
+    color: var(--primary-color);
+}
+
+.info-content {
+    color: var(--gray);
+    line-height: 1.6;
+}
+
+.info-content ol,
+.info-content ul {
+    padding-left: 20px;
+    margin: 15px 0;
+}
+
+.info-content li {
+    margin-bottom: 8px;
+}
+
+.recent-staff {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.staff-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--light-color);
+    border-radius: 10px;
+}
+
+.staff-avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.staff-info {
+    flex-grow: 1;
+}
+
+.staff-info strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.staff-info span {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 3px;
+}
+
+.staff-info small {
+    font-size: 0.8rem;
+    color: var(--gray-light);
+}
+
+.info-card.emergency {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+}
+
+.info-card.emergency h3 {
+    color: white;
+}
+
+.info-card.emergency h3 i {
+    color: white;
+}
+
+.info-card.emergency .info-content {
+    color: rgba(255,255,255,0.9);
+}
+
+.btn-light {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+}
+
+.btn-light:hover {
+    background: #f8f9fa;
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+}
+
+@media (max-width: 1200px) {
+    .registration-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .permissions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 992px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .registration-form-card {
+        padding: 30px 20px;
+    }
+    
+    .preset-buttons {
+        flex-direction: column;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn-outline,
+    .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        padding: 60px 0;
+    }
+    
+    .alert-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .password-input .toggle-password,
+    .password-input .generate-password {
+        position: static;
+        transform: none;
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const button = input.parentElement.querySelector('.toggle-password');
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+function generatePassword() {
+    const length = 12;
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+    let password = "";
+    
+    for (let i = 0; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    
+    document.getElementById('password').value = password;
+    document.getElementById('confirm_password').value = password;
+    checkPasswordStrength(password);
+    
+    // Показать пароль на 3 секунды
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm_password');
+    
+    passwordInput.type = 'text';
+    confirmInput.type = 'text';
+    
+    setTimeout(() => {
+        passwordInput.type = 'password';
+        confirmInput.type = 'password';
+    }, 3000);
+}
+
+function checkPasswordStrength(password) {
+    let strength = 0;
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    
+    // Сбросить состояние
+    strengthFill.className = 'strength-fill';
+    strengthText.textContent = 'Надежность пароля';
+    strengthText.style.color = 'var(--gray)';
+    
+    if (!password) return;
+    
+    // Проверка длины
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    
+    // Проверка на наличие разных типов символов
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+    
+    // Обновить индикатор
+    if (strength <= 2) {
+        strengthFill.className = 'strength-fill weak';
+        strengthText.textContent = 'Слабый пароль';
+        strengthText.style.color = 'var(--danger)';
+    } else if (strength <= 4) {
+        strengthFill.className = 'strength-fill medium';
+        strengthText.textContent = 'Средний пароль';
+        strengthText.style.color = 'var(--warning)';
+    } else {
+        strengthFill.className = 'strength-fill strong';
+        strengthText.textContent = 'Сильный пароль';
+        strengthText.style.color = 'var(--success)';
+    }
+}
+
+function validateForm() {
+    const form = document.getElementById('staffForm');
+    const fullName = document.getElementById('full_name').value;
+    const position = document.getElementById('position').value;
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    // Проверка обязательных полей
+    if (!fullName || !position || !username || !email || !password || !confirmPassword) {
+        alert('Пожалуйста, заполните все обязательные поля');
+        return false;
+    }
+    
+    // Проверка паролей
+    if (password !== confirmPassword) {
+        alert('Пароли не совпадают');
+        return false;
+    }
+    
+    if (password.length < 8) {
+        alert('Пароль должен содержать минимум 8 символов');
+        return false;
+    }
+    
+    // Проверка email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Пожалуйста, введите корректный email адрес');
+        return false;
+    }
+    
+    // Проверка имени пользователя
+    const usernameRegex = /^[a-zA-Z0-9.]+$/;
+    if (!usernameRegex.test(username)) {
+        alert('Имя пользователя может содержать только латинские буквы, цифры и точки');
+        return false;
+    }
+    
+    return true;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Автофокус на поле ФИО
+    const fullNameInput = document.getElementById('full_name');
+    if (fullNameInput) {
+        fullNameInput.focus();
+    }
+    
+    // Проверка силы пароля
+    const passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+        });
+    }
+    
+    // Кнопки стандартных графиков
+    const presetButtons = document.querySelectorAll('.preset-btn');
+    const scheduleInput = document.getElementById('work_schedule');
+    
+    presetButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            scheduleInput.value = this.dataset.schedule;
+        });
+    });
+    
+    // Валидация формы при отправке
+    const form = document.getElementById('staffForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+            }
+        });
+    }
+    
+    // Кнопка отправки приглашения
+    const sendInviteBtn = document.getElementById('sendInvite');
+    if (sendInviteBtn) {
+        sendInviteBtn.addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert('Пожалуйста, сначала введите email сотрудника');
+                return;
+            }
+            
+            if (confirm(`Отправить приглашение на ${email}?`)) {
+                // Здесь можно добавить AJAX запрос
+                alert('Приглашение отправлено!');
+            }
+        });
+    }
+    
+    // Автозаполнение специализации на основе должности
+    const positionSelect = document.getElementById('position');
+    const specializationInput = document.getElementById('specialization');
+    
+    if (positionSelect && specializationInput) {
+        positionSelect.addEventListener('change', function() {
+            const position = this.value;
+            const specializationMap = {
+                'Ветеринарный врач': 'Терапия, диагностика',
+                'Хирург': 'Хирургия, травматология',
+                'Терапевт': 'Терапия, диагностика',
+                'Ассистент врача': 'Ассистирование, уход',
+                'Администратор': 'Администрирование, клиентский сервис',
+                'Медсестра': 'Уход, процедуры',
+                'Лаборант': 'Лабораторная диагностика',
+                'Грумер': 'Груминг, гигиена'
+            };
+            
+            if (specializationMap[position]) {
+                specializationInput.value = specializationMap[position];
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
