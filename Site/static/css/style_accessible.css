@@ -1,0 +1,567 @@
+/* Стили для слабовидящих - ГОСТ Р 52872-2012 */
+
+/* Базовые классы контрастности */
+body.normal-contrast {
+    /* Возвращаем стандартные цвета */
+    --primary-color: #2A9D8F;
+    --primary-dark: #1E7167;
+    --secondary-color: #E9C46A;
+    --dark-color: #264653;
+    --gray: #6C757D;
+    --gray-light: #ADB5BD;
+    --light-color: #F8F9FA;
+    --white: #FFFFFF;
+}
+
+body.high-contrast .contrast-btn.active,
+body.inverted-contrast .contrast-btn.active {
+    border: 2px solid white !important;
+}
+
+/* Контрастность */
+body.high-contrast {
+    --primary-color: #000000;
+    --primary-dark: #000000;
+    --secondary-color: #000000;
+    --dark-color: #000000;
+    --gray: #333333;
+    --gray-light: #666666;
+    --light-color: #ffffff;
+    --white: #ffffff;
+    
+    background: white !important;
+    color: black !important;
+}
+
+body.high-contrast a {
+    color: #0000EE !important;
+}
+
+body.high-contrast a:hover {
+    color: #551A8B !important;
+}
+
+body.high-contrast .btn {
+    background: black !important;
+    color: white !important;
+    border: 2px solid black !important;
+}
+
+body.high-contrast .btn:hover {
+    background: #333333 !important;
+}
+
+body.inverted-contrast {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Активная кнопка контрастности */
+.contrast-btn.active {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Базовые настройки */
+.accessible-mode {
+    font-family: 'Arial', sans-serif !important;
+    line-height: 1.8 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Высокая контрастность - Режим А (черный на белом) */
+.accessible-mode.contrast-white {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+}
+
+.accessible-mode.contrast-white * {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border-color: #000000 !important;
+}
+
+.accessible-mode.contrast-white a {
+    color: #0000EE !important;
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+.accessible-mode.contrast-white a:visited {
+    color: #551A8B !important;
+}
+
+.accessible-mode.contrast-white a:hover,
+.accessible-mode.contrast-white a:focus {
+    color: #FF0000 !important;
+    text-decoration: none !important;
+    outline: 3px solid #FF0000 !important;
+    outline-offset: 2px !important;
+}
+
+/* Режим Б (белый на черном) */
+.accessible-mode.contrast-black {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+}
+
+.accessible-mode.contrast-black * {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
+}
+
+.accessible-mode.contrast-black a {
+    color: #1E90FF !important;
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+.accessible-mode.contrast-black a:visited {
+    color: #9370DB !important;
+}
+
+.accessible-mode.contrast-black a:hover,
+.accessible-mode.contrast-black a:focus {
+    color: #FFA500 !important;
+    text-decoration: none !important;
+    outline: 3px solid #FFA500 !important;
+    outline-offset: 2px !important;
+}
+
+/* Режим В (темно-синий на бежевом) */
+.accessible-mode.contrast-blue {
+    background-color: #FFFFE0 !important;
+    color: #00008B !important;
+}
+
+.accessible-mode.contrast-blue * {
+    background-color: #FFFFE0 !important;
+    color: #00008B !important;
+    border-color: #00008B !important;
+}
+
+.accessible-mode.contrast-blue a {
+    color: #8B0000 !important;
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+.accessible-mode.contrast-blue a:visited {
+    color: #800080 !important;
+}
+
+.accessible-mode.contrast-blue a:hover,
+.accessible-mode.contrast-blue a:focus {
+    color: #FF4500 !important;
+    text-decoration: none !important;
+    outline: 3px solid #FF4500 !important;
+    outline-offset: 2px !important;
+}
+
+/* Общие правила для всех режимов */
+.accessible-mode {
+    font-size: 18px !important;
+}
+
+.accessible-mode h1,
+.accessible-mode h2,
+.accessible-mode h3,
+.accessible-mode h4,
+.accessible-mode h5,
+.accessible-mode h6 {
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    margin: 30px 0 15px 0 !important;
+}
+
+.accessible-mode h1 {
+    font-size: 2.5rem !important;
+    border-bottom: 3px solid !important;
+    padding-bottom: 10px !important;
+}
+
+.accessible-mode h2 {
+    font-size: 2rem !important;
+    border-bottom: 2px solid !important;
+    padding-bottom: 8px !important;
+}
+
+.accessible-mode h3 {
+    font-size: 1.75rem !important;
+}
+
+.accessible-mode p {
+    margin-bottom: 20px !important;
+    font-size: 1.1rem !important;
+}
+
+.accessible-mode strong,
+.accessible-mode b {
+    font-weight: 900 !important;
+}
+
+/* Панель управления доступностью */
+.accessibility-controls {
+    background: #000 !important;
+    color: #FFF !important;
+    padding: 20px 0 !important;
+    border-bottom: 3px solid #FFF !important;
+}
+
+.controls-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.control-btn {
+    background: #FFF !important;
+    color: #000 !important;
+    border: 3px solid #000 !important;
+    padding: 12px 20px !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    text-transform: uppercase !important;
+    transition: none !important;
+}
+
+.control-btn:hover,
+.control-btn:focus {
+    background: #FF0 !important;
+    color: #000 !important;
+    outline: 3px solid #FF0 !important;
+}
+
+.btn-icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    color: #FFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Упрощенная шапка */
+.header-accessible {
+    background: #000 !important;
+    color: #FFF !important;
+    padding: 20px 0 !important;
+    border-bottom: 3px solid #FFF !important;
+}
+
+.site-title h1 {
+    font-size: 2.5rem !important;
+    margin: 0 !important;
+    color: #FFF !important;
+}
+
+.tagline {
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    color: #FF0 !important;
+    margin: 5px 0 0 0 !important;
+}
+
+.emergency-info {
+    background: #F00 !important;
+    color: #FFF !important;
+    padding: 15px !important;
+    margin-top: 20px !important;
+    font-size: 1.3rem !important;
+    font-weight: bold !important;
+}
+
+/* Упрощенная навигация */
+.nav-accessible ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 20px 0 0 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+}
+
+.nav-accessible li {
+    margin: 0 !important;
+}
+
+.nav-accessible a {
+    display: block !important;
+    background: #FFF !important;
+    color: #000 !important;
+    text-decoration: none !important;
+    padding: 15px 20px !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    border: 3px solid #000 !important;
+    text-transform: uppercase !important;
+}
+
+.nav-accessible a:hover,
+.nav-accessible a:focus,
+.nav-accessible a[aria-current="page"] {
+    background: #FF0 !important;
+    color: #000 !important;
+    outline: 3px solid #FF0 !important;
+}
+
+/* Основное содержимое */
+#main-content {
+    min-height: 500px;
+    padding: 40px 0 !important;
+}
+
+/* Сообщения */
+.alerts-accessible {
+    margin-bottom: 30px !important;
+}
+
+.alerts-accessible .alert {
+    padding: 20px !important;
+    margin-bottom: 15px !important;
+    border: 3px solid !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+}
+
+.alerts-accessible .alert-success {
+    background: #DFF !important;
+    color: #006 !important;
+    border-color: #006 !important;
+}
+
+.alerts-accessible .alert-danger {
+    background: #FDD !important;
+    color: #600 !important;
+    border-color: #600 !important;
+}
+
+.alerts-accessible .alert-warning {
+    background: #FFC !important;
+    color: #660 !important;
+    border-color: #660 !important;
+}
+
+.alerts-accessible .alert-info {
+    background: #DFF !important;
+    color: #066 !important;
+    border-color: #066 !important;
+}
+
+/* Формы в доступном режиме */
+.accessible-mode form {
+    margin: 30px 0 !important;
+}
+
+.accessible-mode label {
+    display: block !important;
+    font-weight: bold !important;
+    font-size: 1.3rem !important;
+    margin-bottom: 10px !important;
+}
+
+.accessible-mode input[type="text"],
+.accessible-mode input[type="email"],
+.accessible-mode input[type="tel"],
+.accessible-mode input[type="password"],
+.accessible-mode textarea,
+.accessible-mode select {
+    display: block !important;
+    width: 100% !important;
+    padding: 15px !important;
+    font-size: 1.3rem !important;
+    border: 3px solid !important;
+    margin-bottom: 20px !important;
+    background: #FFF !important;
+    color: #000 !important;
+}
+
+.accessible-mode button[type="submit"],
+.accessible-mode input[type="submit"] {
+    background: #000 !important;
+    color: #FFF !important;
+    border: 3px solid #000 !important;
+    padding: 20px 40px !important;
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    text-transform: uppercase !important;
+}
+
+.accessible-mode button[type="submit"]:hover,
+.accessible-mode input[type="submit"]:hover,
+.accessible-mode button[type="submit"]:focus,
+.accessible-mode input[type="submit"]:focus {
+    background: #FF0 !important;
+    color: #000 !important;
+    outline: 3px solid #FF0 !important;
+}
+
+/* Таблицы */
+.accessible-mode table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 30px 0 !important;
+    font-size: 1.2rem !important;
+}
+
+.accessible-mode th {
+    background: #000 !important;
+    color: #FFF !important;
+    padding: 15px !important;
+    border: 3px solid !important;
+    text-align: left !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+}
+
+.accessible-mode td {
+    padding: 15px !important;
+    border: 3px solid !important;
+    vertical-align: top !important;
+}
+
+/* Упрощенный футер */
+.footer-accessible {
+    background: #000 !important;
+    color: #FFF !important;
+    padding: 40px 0 20px !important;
+    border-top: 3px solid #FFF !important;
+    margin-top: 50px !important;
+}
+
+.footer-simple {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-block h2 {
+    font-size: 1.8rem !important;
+    color: #FF0 !important;
+    margin-bottom: 20px !important;
+    border-bottom: 2px solid #FF0 !important;
+    padding-bottom: 10px !important;
+}
+
+.footer-block ul {
+    list-style: none !important;
+    padding: 0 !important;
+}
+
+.footer-block li {
+    margin-bottom: 15px !important;
+}
+
+.footer-block a {
+    color: #1E90FF !important;
+    text-decoration: underline !important;
+    font-weight: bold !important;
+    font-size: 1.2rem !important;
+}
+
+.footer-block a:hover,
+.footer-block a:focus {
+    color: #FFA500 !important;
+    text-decoration: none !important;
+}
+
+.footer-copyright {
+    text-align: center !important;
+    padding-top: 30px !important;
+    border-top: 2px solid #FFF !important;
+    font-size: 1.1rem !important;
+    color: #CCC !important;
+}
+
+/* Вспомогательные классы */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.image-description {
+    display: block !important;
+    padding: 10px !important;
+    background: #EEE !important;
+    color: #333 !important;
+    border: 2px dashed #666 !important;
+    margin: 10px 0 !important;
+    font-style: italic !important;
+    font-weight: bold !important;
+}
+
+/* Фокус для клавиатурной навигации */
+.accessible-mode *:focus {
+    outline: 3px solid #FF0000 !important;
+    outline-offset: 2px !important;
+}
+
+/* Отключение анимаций */
+.accessible-mode * {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Увеличенные элементы управления */
+.accessible-mode input[type="checkbox"],
+.accessible-mode input[type="radio"] {
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 15px !important;
+}
+
+.accessible-mode ::-webkit-scrollbar {
+    width: 20px !important;
+}
+
+.accessible-mode ::-webkit-scrollbar-thumb {
+    background: #000 !important;
+    border: 3px solid #FFF !important;
+}
+
+.accessible-mode ::-webkit-scrollbar-track {
+    background: #FFF !important;
+}
+
+/* Адаптивность для доступной версии */
+@media (max-width: 768px) {
+    .accessible-mode {
+        font-size: 20px !important;
+    }
+    
+    .controls-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .control-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    .nav-accessible ul {
+        flex-direction: column !important;
+    }
+    
+    .footer-simple {
+        grid-template-columns: 1fr !important;
+    }
+}
