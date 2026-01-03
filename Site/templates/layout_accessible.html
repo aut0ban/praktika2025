@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ветеринарная клиника "Друг" (версия для слабовидящих){% endblock %}</title>
+    
+    <!-- Стиль для слабовидящих -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_accessible.css') }}">
+    
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="accessible-mode">
+    
+    <!-- Кнопки доступности -->
+    <div class="accessibility-bar accessible-bar">
+        <a href="{{ url_for('toggle_accessible') }}" class="accessibility-btn" title="Переключить на обычную версию">
+            <i class="fas fa-universal-access"></i>
+            Обычная версия
+        </a>
+        
+        <button onclick="increaseFont()" class="accessibility-btn" title="Увеличить шрифт">
+            <i class="fas fa-text-height"></i>
+        </button>
+        <button onclick="decreaseFont()" class="accessibility-btn" title="Уменьшить шрифт">
+            <i class="fas fa-text-height fa-rotate-180"></i>
+        </button>
+        
+        <!-- Кнопки контрастности -->
+        <button class="accessibility-btn contrast-btn" data-contrast="normal" title="Обычный контраст">
+            <i class="fas fa-adjust"></i>
+        </button>
+        <button class="accessibility-btn contrast-btn" data-contrast="high" title="Высокий контраст">
+            <i class="fas fa-sun"></i>
+        </button>
+        <button class="accessibility-btn contrast-btn" data-contrast="inverted" title="Инвертированный контраст">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Шапка сайта -->
+    <header class="header accessible-header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">
+                        <i class="fas fa-paw"></i>
+                        <span>ВетКлиника <strong>"Друг"</strong> (версия для слабовидящих)</span>
+                    </a>
+                </div>
+                
+                <div class="header-contacts">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+7 (495) 123-45-67</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Ежедневно 8:00-22:00</span>
+                    </div>
+                </div>
+                
+                {% if current_user.is_authenticated %}
+                <div class="user-menu">
+                    <span>Добро пожаловать, {{ current_user.full_name or current_user.username }}!</span>
+                    <a href="{{ url_for('logout') }}" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Основное меню -->
+            <nav class="main-nav accessible-nav" role="navigation" aria-label="Основная навигация">
+                <ul role="menubar">
+                    <li role="menuitem"><a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active"{% endif %}>
+                        <i class="fas fa-home"></i> Главная
+                    </a></li>
+                    <li role="menuitem"><a href="{{ url_for('services') }}" {% if request.endpoint == 'services' %}class="active"{% endif %}>
+                        <i class="fas fa-stethoscope"></i> Услуги
+                    </a></li>
+                    <li role="menuitem"><a href="{{ url_for('doctors') }}" {% if request.endpoint == 'doctors' %}class="active"{% endif %}>
+                        <i class="fas fa-user-md"></i> Врачи
+                    </a></li>
+                    <li role="menuitem"><a href="{{ url_for('articles') }}" {% if request.endpoint == 'articles' %}class="active"{% endif %}>
+                        <i class="fas fa-newspaper"></i> Статьи
+                    </a></li>
+                    <li role="menuitem"><a href="{{ url_for('news') }}" {% if request.endpoint == 'news' %}class="active"{% endif %}>
+                        <i class="fas fa-bullhorn"></i> Новости
+                    </a></li>
+                    <li role="menuitem"><a href="{{ url_for('contacts') }}" {% if request.endpoint == 'contacts' %}class="active"{% endif %}>
+                        <i class="fas fa-address-book"></i> Контакты
+                    </a></li>
+                    <li role="menuitem"><a href="{{ url_for('sitemap') }}" {% if request.endpoint == 'sitemap' %}class="active"{% endif %}>
+                        <i class="fas fa-sitemap"></i> Карта сайта
+                    </a></li>
+                    {% if current_user.is_authenticated %}
+                    <li role="menuitem"><a href="{{ url_for('profile') }}" {% if request.endpoint == 'profile' %}class="active"{% endif %}>
+                        <i class="fas fa-user"></i> Личный кабинет
+                    </a></li>
+                    {% else %}
+                    <li role="menuitem"><a href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}class="active"{% endif %}>
+                        <i class="fas fa-sign-in-alt"></i> Вход
+                    </a></li>
+                    {% endif %}
+                </ul>
+                
+                <!-- Поиск -->
+                <div class="search-box" role="search">
+                    <form action="{{ url_for('search') }}" method="get">
+                        <input type="text" name="q" placeholder="Поиск по сайту..." value="{{ request.args.get('q', '') }}" 
+                               aria-label="Поиск по сайту">
+                        <button type="submit" aria-label="Найти"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Баннер -->
+    <div class="banner accessible-banner">
+        <div class="container">
+            <div class="banner-content">
+                <h1>Забота о ваших питомцах — наша профессия</h1>
+                <p>Круглосуточная ветеринарная помощь. Современное оборудование. Опытные врачи.</p>
+                <a href="{{ url_for('contacts') }}" class="btn btn-primary">Записаться на прием</a>
+                <a href="tel:+74951234567" class="btn btn-secondary">
+                    <i class="fas fa-phone"></i> Срочный вызов
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основное содержимое -->
+    <main class="main-content" role="main">
+        <div class="container">
+            <!-- Flash сообщения -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages" role="alert">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                                <button class="close-alert" aria-label="Закрыть">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer accessible-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Клиника "Друг"</h3>
+                    <p>Мы заботимся о здоровье ваших питомцев с 2010 года. Современное оборудование, квалифицированные специалисты, индивидуальный подход.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="ВКонтакте"><i class="fab fa-vk"></i></a>
+                        <a href="#" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul class="contact-list">
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Ветеринарная, 15</li>
+                        <li><i class="fas fa-phone"></i> +7 (495) 123-45-67</li>
+                        <li><i class="fas fa-phone"></i> +7 (495) 765-43-21 (скорая)</li>
+                        <li><i class="fas fa-envelope"></i> info@vetdrug.ru</li>
+                        <li><i class="fas fa-clock"></i> Ежедневно 8:00-22:00</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Быстрые ссылки</h3>
+                    <ul class="quick-links">
+                        <li><a href="{{ url_for('index') }}">Главная</a></li>
+                        <li><a href="{{ url_for('services') }}">Услуги и цены</a></li>
+                        <li><a href="{{ url_for('doctors') }}">Наши врачи</a></li>
+                        <li><a href="{{ url_for('articles') }}">Полезные статьи</a></li>
+                        <li><a href="{{ url_for('news') }}">Новости клиники</a></li>
+                        <li><a href="{{ url_for('contacts') }}">Запись на прием</a></li>
+                        <li><a href="{{ url_for('sitemap') }}">Карта сайта</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Экстренная помощь</h3>
+                    <p>Если вашему питомцу нужна срочная помощь, звоните круглосуточно:</p>
+                    <a href="tel:+74957654321" class="emergency-phone">
+                        <i class="fas fa-ambulance"></i> +7 (495) 765-43-21
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ветеринарная клиника "Друг". Все права защищены.</p>
+                <p>Московский университет имени С.Ю. Витте. Проект по разработке сайта.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Закрытие flash сообщений
+        document.querySelectorAll('.close-alert').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+
+        // Управление контрастностью
+        document.addEventListener('DOMContentLoaded', function() {
+            const contrastButtons = document.querySelectorAll('.contrast-btn');
+            const body = document.body;
+            
+            // Восстанавливаем сохраненный контраст
+            const savedContrast = localStorage.getItem('contrast-mode');
+            if (savedContrast) {
+                body.classList.remove('normal-contrast', 'high-contrast', 'inverted-contrast');
+                body.classList.add(savedContrast);
+                
+                // Обновляем активную кнопку
+                contrastButtons.forEach(btn => {
+                    if (btn.dataset.contrast === savedContrast.replace('-contrast', '')) {
+                        btn.classList.add('active');
+                    }
+                });
+            } else {
+                // По умолчанию - обычный контраст
+                body.classList.add('normal-contrast');
+                contrastButtons[0].classList.add('active');
+            }
+            
+            // Обработчики кнопок контрастности
+            contrastButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const contrast = this.dataset.contrast;
+                    
+                    // Удаляем все классы контрастности
+                    body.classList.remove('normal-contrast', 'high-contrast', 'inverted-contrast');
+                    
+                    // Добавляем выбранный класс
+                    body.classList.add(contrast + '-contrast');
+                    
+                    // Сохраняем в localStorage
+                    localStorage.setItem('contrast-mode', contrast + '-contrast');
+                    
+                    // Обновляем активную кнопку
+                    contrastButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // Функции для изменения размера шрифта
+        function increaseFont() {
+            let currentSize = parseInt(getComputedStyle(document.body).fontSize);
+            document.body.style.fontSize = (currentSize + 2) + 'px';
+            localStorage.setItem('fontSize', document.body.style.fontSize);
+        }
+
+        function decreaseFont() {
+            let currentSize = parseInt(getComputedStyle(document.body).fontSize);
+            if (currentSize > 12) {
+                document.body.style.fontSize = (currentSize - 2) + 'px';
+                localStorage.setItem('fontSize', document.body.style.fontSize);
+            }
+        }
+
+        // Восстановление размера шрифта при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedFontSize = localStorage.getItem('fontSize');
+            if (savedFontSize) {
+                document.body.style.fontSize = savedFontSize;
+            }
+        });
+    </script>
+</body>
+</html>

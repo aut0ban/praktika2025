@@ -1,0 +1,491 @@
+{% extends base_template %}
+
+{% block title %}Главная - Ветеринарная клиника "Друг"{% endblock %}
+
+{% block content %}
+<!-- Экстренная помощь -->
+<div class="emergency-alert">
+    <div class="container">
+        <div class="alert-content">
+            <i class="fas fa-ambulance"></i>
+            <div>
+                <h3>Экстренная помощь 24/7</h3>
+                <p>Если вашему питомцу нужна срочная помощь, звоните круглосуточно: <strong>+7 (495) 765-43-21</strong></p>
+            </div>
+            <a href="tel:+74957654321" class="btn btn-danger">Срочный вызов</a>
+        </div>
+    </div>
+</div>
+
+<!-- О компании -->
+<section class="about-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>О нашей клинике</h2>
+            <p class="section-subtitle">Мы заботимся о ваших питомцах с 2010 года</p>
+        </div>
+        
+        <div class="about-grid">
+            <div class="about-content">
+                <h3>Ветеринарная клиника "Друг"</h3>
+                <p>Мы - современная многопрофильная ветеринарная клиника, предоставляющая полный спектр услуг для домашних животных. Наша миссия - обеспечить качественную ветеринарную помощь с заботой и вниманием к каждому пациенту.</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-user-md"></i>
+                        <h4>Опытные врачи</h4>
+                        <p>Все специалисты имеют высшее образование и регулярно проходят повышение квалификации</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-microscope"></i>
+                        <h4>Современное оборудование</h4>
+                        <p>Диагностическое и хирургическое оборудование экспертного класса</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-heart"></i>
+                        <h4>Индивидуальный подход</h4>
+                        <p>Персональный подход к каждому пациенту и его владельцу</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-clock"></i>
+                        <h4>Круглосуточная помощь</h4>
+                        <p>Работаем 24/7, включая выезд на дом и экстренную помощь</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-image">
+                <img src="{{ url_for('static', filename='images/clinic_interior.jpg') }}" alt="Интерьер ветеринарной клиники">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Популярные услуги -->
+<section class="services-section bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Наши услуги</h2>
+            <p class="section-subtitle">Комплексная ветеринарная помощь для ваших питомцев</p>
+        </div>
+        
+        <div class="services-grid grid-3">
+            {% for service in services %}
+            <div class="service-card">
+                <div class="service-icon">
+                    {% if service.category == 'Терапия' %}
+                    <i class="fas fa-stethoscope"></i>
+                    {% elif service.category == 'Хирургия' %}
+                    <i class="fas fa-cut"></i>
+                    {% elif service.category == 'Диагностика' %}
+                    <i class="fas fa-search-plus"></i>
+                    {% else %}
+                    <i class="fas fa-paw"></i>
+                    {% endif %}
+                </div>
+                <h3>{{ service.name }}</h3>
+                <p>{{ service.description[:100] }}...</p>
+                <div class="service-footer">
+                    <span class="price-tag">от {{ service.price }} ₽</span>
+                    <a href="{{ url_for('contacts') }}" class="btn btn-outline">Записаться</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('services') }}" class="btn btn-primary">Все услуги</a>
+        </div>
+    </div>
+</section>
+
+<!-- Наши врачи -->
+<section class="doctors-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Наши врачи</h2>
+            <p class="section-subtitle">Профессионалы с большим опытом работы</p>
+        </div>
+        
+        <div class="doctors-grid grid-3">
+            {% for doctor in doctors %}
+            <div class="doctor-card">
+                <img src="{{ url_for('static', filename=doctor.photo_url) }}" alt="{{ doctor.name }}" class="doctor-img">
+                <h3>{{ doctor.name }}</h3>
+                <p class="specialization">{{ doctor.specialization }}</p>
+                <div class="doctor-info">
+                    <p><i class="fas fa-briefcase"></i> Опыт: {{ doctor.experience }} лет</p>
+                    <p class="doctor-bio">{{ doctor.bio[:100] }}...</p>
+                </div>
+                <a href="{{ url_for('doctors') }}#doctor-{{ doctor.id }}" class="btn btn-outline">Подробнее</a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('doctors') }}" class="btn btn-primary">Все врачи</a>
+        </div>
+    </div>
+</section>
+
+<!-- Последние новости -->
+<section class="news-section bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Последние новости</h2>
+            <p class="section-subtitle">Следите за акциями и событиями клиники</p>
+        </div>
+        
+        <div class="news-grid">
+            {% for item in news %}
+            <div class="news-card">
+                <div class="news-date">
+                    <span class="day">{{ item.created_at.day }}</span>
+                    <span class="month">{{ item.created_at.strftime('%b') }}</span>
+                </div>
+                <div class="news-content">
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.content[:150] }}...</p>
+                    <a href="{{ url_for('news') }}#news-{{ item.id }}" class="read-more">Читать далее →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('news') }}" class="btn btn-primary">Все новости</a>
+        </div>
+    </div>
+</section>
+
+<!-- Полезные статьи -->
+<section class="articles-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Полезные статьи</h2>
+            <p class="section-subtitle">Советы по уходу за питомцами</p>
+        </div>
+        
+        <div class="articles-grid grid-3">
+            <div class="article-card">
+                <img src="{{ url_for('static', filename='images/articles/dental_care_small.jpg') }}" alt="Уход за зубами">
+                <div class="article-body">
+                    <span class="category-badge">Уход</span>
+                    <h3>Как правильно ухаживать за зубами собаки</h3>
+                    <p>Регулярный уход за зубами собаки — залог ее здоровья и долголетия. Узнайте о правильной гигиене полости рта...</p>
+                    <a href="{{ url_for('article_detail', article_id=1) }}" class="btn btn-outline">Читать</a>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <img src="{{ url_for('static', filename='images/articles/vaccination_small.jpg') }}" alt="Вакцинация">
+                <div class="article-body">
+                    <span class="category-badge">Вакцинация</span>
+                    <h3>Вакцинация щенков: полный график</h3>
+                    <p>Вакцинация — важнейшая часть заботы о здоровье щенка. Полный график прививок и рекомендации...</p>
+                    <a href="{{ url_for('article_detail', article_id=2) }}" class="btn btn-outline">Читать</a>
+                </div>
+            </div>
+            
+            <div class="article-card">
+                <img src="{{ url_for('static', filename='images/articles/cat_food_small.jpg') }}" alt="Питание кошек">
+                <div class="article-body">
+                    <span class="category-badge">Питание</span>
+                    <h3>Питание кошек: сухой или влажный корм?</h3>
+                    <p>Выбор между сухим и влажным кормом зависит от многих факторов. Узнайте, что лучше для вашей кошки...</p>
+                    <a href="{{ url_for('article_detail', article_id=3) }}" class="btn btn-outline">Читать</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('articles') }}" class="btn btn-primary">Все статьи</a>
+        </div>
+    </div>
+</section>
+
+<!-- Запись на прием -->
+<section class="appointment-section bg-primary text-white">
+    <div class="container">
+        <div class="appointment-content">
+            <h2>Записаться на прием</h2>
+            <p>Оставьте заявку и мы подберем удобное время для визита в клинику</p>
+            
+            <div class="appointment-features">
+                <div class="feature">
+                    <i class="fas fa-calendar-check"></i>
+                    <h4>Онлайн запись</h4>
+                    <p>Выберите удобное время через сайт</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-clock"></i>
+                    <h4>Срочный прием</h4>
+                    <p>Принимаем без записи в экстренных случаях</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-home"></i>
+                    <h4>Выезд на дом</h4>
+                    <p>Оказание помощи на дому при необходимости</p>
+                </div>
+            </div>
+            
+            <a href="{{ url_for('contacts') }}" class="btn btn-light btn-lg">Записаться онлайн</a>
+        </div>
+    </div>
+</section>
+
+<!-- Отзывы -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Отзывы клиентов</h2>
+            <p class="section-subtitle">Что говорят владельцы о нашей клинике</p>
+        </div>
+        
+        <div class="testimonials-slider">
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"Огромное спасибо врачам клиники! Наш кот попал в ДТП, и только благодаря быстрой реакции и профессионализму хирургов он выжил и полностью восстановился."</p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/testimonials/user1.jpg') }}" alt="Анна Петрова">
+                    <div>
+                        <h4>Анна Петрова</h4>
+                        <span>владелец кота Барсика</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"Регулярно посещаем клинику для профилактических осмотров. Всегда вежливый персонал, современное оборудование. Особенно благодарны терапевту Ивановой А.С."</p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/testimonials/user2.jpg') }}" alt="Иван Сидоров">
+                    <div>
+                        <h4>Иван Сидоров</h4>
+                        <span>владелец собаки Шарика</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.emergency-alert {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    padding: 15px 0;
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.alert-content i {
+    font-size: 2.5rem;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.feature {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.feature i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.service-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.doctor-info {
+    margin: 15px 0;
+}
+
+.news-card {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.news-date {
+    background: var(--primary-color);
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+}
+
+.news-date .day {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.news-date .month {
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+.news-content {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.article-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.article-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.article-body {
+    padding: 20px;
+}
+
+.appointment-section {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.appointment-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.testimonial {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.testimonial-author img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.bg-light {
+    background: var(--light-color);
+}
+
+.bg-primary {
+    background: var(--primary-color);
+}
+
+.text-white {
+    color: white;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+.btn-outline {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-light {
+    background: white;
+    color: var(--primary-color);
+}
+
+.btn-light:hover {
+    background: #f8f9fa;
+}
+
+.btn-lg {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-subtitle {
+    color: var(--gray);
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+</style>
+{% endblock %}

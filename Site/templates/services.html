@@ -1,0 +1,692 @@
+{% extends base_template %}
+
+{% block title %}Услуги и цены - Ветеринарная клиника "Друг"{% endblock %}
+
+{% block content %}
+<!-- Заголовок страницы -->
+<div class="page-header">
+    <div class="container">
+        <h1>Услуги и цены</h1>
+        <p>Полный спектр ветеринарных услуг для ваших питомцев</p>
+    </div>
+</div>
+
+<!-- Фильтр услуг -->
+<section class="services-filter">
+    <div class="container">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">Все услуги</button>
+            {% for category in categories %}
+            <button class="filter-btn" data-filter="{{ category[0] }}">{{ category[0] }}</button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Список услуг -->
+<section class="services-list">
+    <div class="container">
+        <div class="services-container">
+            {% for service in services %}
+            <div class="service-item" data-category="{{ service.category }}">
+                <div class="service-header">
+                    <h3>{{ service.name }}</h3>
+                    <span class="service-price">{{ service.price }} ₽</span>
+                </div>
+                
+                <div class="service-body">
+                    <p>{{ service.description }}</p>
+                    
+                    <div class="service-meta">
+                        <span class="service-category">
+                            <i class="fas fa-tag"></i> {{ service.category }}
+                        </span>
+                        <span class="service-duration">
+                            <i class="fas fa-clock"></i> {{ service.duration }}
+                        </span>
+                    </div>
+                    
+                    <div class="service-actions">
+                        <a href="{{ url_for('contacts') }}?service={{ service.id }}" class="btn btn-primary">
+                            <i class="fas fa-calendar-plus"></i> Записаться
+                        </a>
+                        <button class="btn btn-outline" data-toggle="modal" data-target="#serviceModal{{ service.id }}">
+                            <i class="fas fa-info-circle"></i> Подробнее
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Модальное окно для услуги -->
+            <div class="modal fade" id="serviceModal{{ service.id }}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{ service.name }}</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h4>Описание</h4>
+                            <p>{{ service.description }}</p>
+                            
+                            <div class="service-details">
+                                <div class="detail-item">
+                                    <strong>Категория:</strong>
+                                    <span>{{ service.category }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Цена:</strong>
+                                    <span class="price">{{ service.price }} ₽</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Длительность:</strong>
+                                    <span>{{ service.duration }}</span>
+                                </div>
+                            </div>
+                            
+                            <h4>Что входит в услугу?</h4>
+                            <ul class="service-includes">
+                                {% if service.category == 'Терапия' %}
+                                <li>Осмотр врача-терапевта</li>
+                                <li>Измерение температуры, давления</li>
+                                <li>Назначение лечения</li>
+                                <li>Консультация по уходу</li>
+                                {% elif service.category == 'Хирургия' %}
+                                <li>Предоперационный осмотр</li>
+                                <li>Анестезия и мониторинг</li>
+                                <li>Хирургическое вмешательство</li>
+                                <li>Послеоперационный уход</li>
+                                {% elif service.category == 'Диагностика' %}
+                                <li>Проведение исследования</li>
+                                <li>Расшифровка результатов</li>
+                                <li>Консультация специалиста</li>
+                                <li>Заключение врача</li>
+                                {% else %}
+                                <li>Полный комплекс процедур</li>
+                                <li>Использование профессионального оборудования</li>
+                                <li>Консультация специалиста</li>
+                                <li>Рекомендации по дальнейшему уходу</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                            <a href="{{ url_for('contacts') }}?service={{ service.id }}" class="btn btn-primary">
+                                Записаться на прием
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Акции и скидки -->
+<section class="discounts-section bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Акции и скидки</h2>
+            <p class="section-subtitle">Специальные предложения для наших клиентов</p>
+        </div>
+        
+        <div class="discounts-grid">
+            <div class="discount-card discount-primary">
+                <div class="discount-badge">-20%</div>
+                <h3>Первичный прием</h3>
+                <p>Скидка 20% на первичный прием для новых клиентов</p>
+                <a href="{{ url_for('contacts') }}" class="btn btn-light">Записаться</a>
+            </div>
+            
+            <div class="discount-card discount-success">
+                <div class="discount-badge">Комплекс</div>
+                <h3>Комплексный чек-ап</h3>
+                <p>Общий осмотр + анализы крови + УЗИ по специальной цене</p>
+                <a href="{{ url_for('contacts') }}" class="btn btn-light">Узнать больше</a>
+            </div>
+            
+            <div class="discount-card discount-warning">
+                <div class="discount-badge">-15%</div>
+                <h3>Для пенсионеров</h3>
+                <p>Постоянная скидка 15% для владельцев животных старше 60 лет</p>
+                <a href="{{ url_for('contacts') }}" class="btn btn-light">Подробнее</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Частые вопросы -->
+<section class="faq-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Часто задаваемые вопросы</h2>
+            <p class="section-subtitle">Ответы на популярные вопросы об услугах</p>
+        </div>
+        
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question">
+                    Нужна ли запись на прием?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Да, запись на плановый прием обязательна. Это позволяет нам оптимально распределить время врачей и минимизировать ваше ожидание. В экстренных случаях прием ведется без записи.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Можно ли получить консультацию по телефону?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Да, мы предоставляем бесплатные первичные консультации по телефону. Однако для точной диагностики и назначения лечения необходим очный осмотр животного.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Какие документы нужны для приема?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>При первом посещении необходимо иметь ветеринарный паспорт животного (если есть). Для участия в акциях может потребоваться документ, подтверждающий право на льготу.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Есть ли возможность оплаты картой?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Да, мы принимаем оплату наличными, банковскими картами (Visa, Mastercard, Мир), а также через мобильные приложения (Сбербанк Онлайн, Тинькофф и др.).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Дополнительные услуги -->
+<section class="additional-services bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Дополнительные услуги</h2>
+            <p class="section-subtitle">Вспомогательные сервисы для вашего удобства</p>
+        </div>
+        
+        <div class="additional-grid">
+            <div class="additional-card">
+                <i class="fas fa-home fa-3x"></i>
+                <h3>Выезд на дом</h3>
+                <p>Ветеринарный врач приедет к вам домой для осмотра и оказания помощи</p>
+                <p class="price">от 2000 ₽</p>
+            </div>
+            
+            <div class="additional-card">
+                <i class="fas fa-hotel fa-3x"></i>
+                <h3>Гостиница для животных</h3>
+                <p>Передержка питомцев на время вашего отъезда с профессиональным уходом</p>
+                <p class="price">от 1000 ₽/сутки</p>
+            </div>
+            
+            <div class="additional-card">
+                <i class="fas fa-car fa-3x"></i>
+                <h3>Транспортировка</h3>
+                <p>Доставка животного в клинику и обратно на специально оборудованном транспорте</p>
+                <p class="price">от 1500 ₽</p>
+            </div>
+            
+            <div class="additional-card">
+                <i class="fas fa-phone-alt fa-3x"></i>
+                <h3>Телемедицина</h3>
+                <p>Онлайн-консультации с ветеринарными врачами через видеосвязь</p>
+                <p class="price">от 1000 ₽</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.services-filter {
+    background: white;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--gray-light);
+    margin-bottom: 30px;
+    position: sticky;
+    top: 140px;
+    z-index: 10;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 10px 25px;
+    border: 2px solid var(--gray-light);
+    background: white;
+    color: var(--gray);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.service-item {
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.service-item:hover {
+    transform: translateY(-5px);
+}
+
+.service-header {
+    background: var(--light-color);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.service-header h3 {
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.service-price {
+    background: var(--primary-color);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.service-body {
+    padding: 20px;
+}
+
+.service-meta {
+    display: flex;
+    gap: 20px;
+    margin: 15px 0;
+    color: var(--gray);
+}
+
+.service-meta i {
+    margin-right: 5px;
+}
+
+.service-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.discounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.discount-card {
+    padding: 30px;
+    border-radius: 10px;
+    color: white;
+    position: relative;
+    text-align: center;
+}
+
+.discount-card h3 {
+    color: white;
+    margin-top: 20px;
+}
+
+.discount-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+}
+
+.discount-success {
+    background: linear-gradient(135deg, var(--success), #1e7e34);
+}
+
+.discount-warning {
+    background: linear-gradient(135deg, var(--warning), #e0a800);
+}
+
+.discount-badge {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background: white;
+    color: var(--dark-color);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    border: 1px solid var(--gray-light);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.faq-question {
+    width: 100%;
+    padding: 20px;
+    text-align: left;
+    background: white;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.faq-question:hover {
+    background: var(--light-color);
+}
+
+.faq-question i {
+    transition: transform 0.3s ease;
+}
+
+.faq-question.active i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.faq-answer.open {
+    padding: 20px;
+    max-height: 500px;
+}
+
+.additional-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.additional-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.additional-card i {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.additional-card .price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-top: 15px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog {
+    background: white;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content {
+    padding: 30px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.modal-title {
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--gray);
+}
+
+.close:hover {
+    color: var(--dark-color);
+}
+
+.service-details {
+    margin: 20px 0;
+    padding: 20px;
+    background: var(--light-color);
+    border-radius: 10px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.service-includes {
+    list-style: none;
+    padding: 0;
+}
+
+.service-includes li {
+    padding: 8px 0;
+    padding-left: 25px;
+    position: relative;
+}
+
+.service-includes li:before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: bold;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-light);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Фильтрация услуг
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const serviceItems = document.querySelectorAll('.service-item');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Убираем активный класс у всех кнопок
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Добавляем активный класс текущей кнопке
+            this.classList.add('active');
+            
+            const filter = this.dataset.filter;
+            
+            // Показываем/скрываем услуги
+            serviceItems.forEach(item => {
+                if (filter === 'all' || item.dataset.category === filter) {
+                    item.style.display = 'block';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+    
+    // FAQ аккордеон
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const isOpen = answer.classList.contains('open');
+            
+            // Закрываем все ответы
+            document.querySelectorAll('.faq-answer').forEach(ans => {
+                ans.classList.remove('open');
+                ans.previousElementSibling.classList.remove('active');
+            });
+            
+            // Открываем текущий, если он был закрыт
+            if (!isOpen) {
+                answer.classList.add('open');
+                this.classList.add('active');
+            }
+        });
+    });
+    
+    // Модальные окна
+    const modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
+    const modals = document.querySelectorAll('.modal');
+    const closeButtons = document.querySelectorAll('.close, .modal .btn-secondary');
+    
+    modalTriggers.forEach(trigger => {
+        trigger.addEventListener('click', function() {
+            const targetId = this.dataset.target;
+            const modal = document.querySelector(targetId);
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    });
+    
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+    });
+    
+    // Закрытие по клику вне модального окна
+    modals.forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

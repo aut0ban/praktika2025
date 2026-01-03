@@ -1,0 +1,1250 @@
+{% extends base_template %}
+
+{% block title %}{{ article.title }} - Ветеринарная клиника "Друг"{% endblock %}
+
+{% block content %}
+<!-- Хлебные крошки -->
+<nav class="breadcrumbs">
+    <div class="container">
+        <a href="{{ url_for('index') }}">Главная</a> &gt;
+        <a href="{{ url_for('articles') }}">Статьи</a> &gt;
+        <a href="{{ url_for('articles') }}?category={{ article.category }}">{{ article.category }}</a> &gt;
+        <span>{{ article.title[:50] }}...</span>
+    </div>
+</nav>
+
+<!-- Заголовок статьи -->
+<section class="article-header">
+    <div class="container">
+        <div class="article-meta">
+            <span class="article-category">{{ article.category }}</span>
+            <span class="article-date">
+                <i class="far fa-calendar"></i> {{ article.created_at.strftime('%d.%m.%Y') }}
+            </span>
+            <span class="article-views">
+                <i class="far fa-eye"></i> {{ article.views }} просмотров
+            </span>
+            <span class="article-readtime">
+                <i class="far fa-clock"></i> {{ (article.content|length / 1200)|round|int }} мин. чтения
+            </span>
+        </div>
+        
+        <h1 class="article-title">{{ article.title }}</h1>
+        
+        <div class="article-author">
+            <img src="{{ url_for('static', filename='images/authors/author1.jpg') }}" alt="Автор">
+            <div>
+                <h4>Автор статьи</h4>
+                <p>Иванова Анна Сергеевна</p>
+                <small>Ветеринар-терапевт, опыт работы 10 лет</small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Основное содержимое статьи -->
+<article class="article-content">
+    <div class="container">
+        <div class="article-wrapper">
+            <div class="article-main">
+                <!-- Изображение статьи -->
+                <div class="article-image-main">
+                    <img src="{{ url_for('static', filename=article.image_url) }}" alt="{{ article.title }}">
+                    <div class="image-caption">Иллюстрация к статье</div>
+                </div>
+                
+                <!-- Содержимое статьи -->
+                <div class="article-text">
+                    {{ article.content|replace('\n', '</p><p>')|safe }}
+                    
+                    <div class="article-note">
+                        <h4><i class="fas fa-exclamation-circle"></i> Важно!</h4>
+                        <p>Данная статья носит информационный характер. Для постановки диагноза и назначения лечения обратитесь к ветеринарному врачу.</p>
+                    </div>
+                </div>
+                
+                <!-- Теги статьи -->
+                <div class="article-tags">
+                    <h4>Теги:</h4>
+                    {% set tags = ['уход', 'здоровье', 'советы', 'ветеринария', 'питомцы'] %}
+                    {% for tag in tags %}
+                    <a href="#" class="tag">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+                
+                <!-- Панель соцсетей -->
+                <div class="article-share">
+                    <h4>Поделиться статьей:</h4>
+                    <div class="share-buttons">
+                        <a href="#" class="share-btn vk" title="Поделиться ВКонтакте">
+                            <i class="fab fa-vk"></i>
+                            <span>ВКонтакте</span>
+                        </a>
+                        <a href="#" class="share-btn telegram" title="Поделиться в Telegram">
+                            <i class="fab fa-telegram"></i>
+                            <span>Telegram</span>
+                        </a>
+                        <a href="#" class="share-btn twitter" title="Поделиться в Twitter">
+                            <i class="fab fa-twitter"></i>
+                            <span>Twitter</span>
+                        </a>
+                        <a href="#" class="share-btn facebook" title="Поделиться в Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Facebook</span>
+                        </a>
+                        <button class="share-btn copy-link" title="Копировать ссылку">
+                            <i class="fas fa-link"></i>
+                            <span>Копировать ссылку</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Навигация по статьям -->
+                <div class="article-navigation">
+                    {% if similar_articles %}
+                    <div class="prev-article">
+                        <a href="{{ url_for('article_detail', article_id=similar_articles[0].id) }}">
+                            <i class="fas fa-arrow-left"></i>
+                            <div>
+                                <span>Предыдущая статья</span>
+                                <h5>{{ similar_articles[0].title[:60] }}...</h5>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    {% if similar_articles|length > 1 %}
+                    <div class="next-article">
+                        <a href="{{ url_for('article_detail', article_id=similar_articles[1].id) }}">
+                            <div>
+                                <span>Следующая статья</span>
+                                <h5>{{ similar_articles[1].title[:60] }}...</h5>
+                            </div>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Боковая панель -->
+            <aside class="article-sidebar">
+                <!-- Похожие статьи -->
+                <div class="sidebar-block">
+                    <h3>Похожие статьи</h3>
+                    <div class="similar-articles">
+                        {% for similar in similar_articles[:3] %}
+                        <a href="{{ url_for('article_detail', article_id=similar.id) }}" class="similar-article">
+                            <div class="similar-image">
+                                <img src="{{ url_for('static', filename=similar.image_url) }}" alt="{{ similar.title }}">
+                            </div>
+                            <div class="similar-content">
+                                <h4>{{ similar.title[:50] }}...</h4>
+                                <span class="similar-category">{{ similar.category }}</span>
+                                <span class="similar-date">{{ similar.created_at.strftime('%d.%m.%Y') }}</span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Популярные статьи -->
+                <div class="sidebar-block">
+                    <h3>Популярные статьи</h3>
+                    <div class="popular-sidebar">
+                        {% for i in range(1, 4) %}
+                        <div class="popular-item">
+                            <span class="popular-rank">{{ i }}</span>
+                            <div class="popular-info">
+                                <h4>Статья {{ i }} по популярности</h4>
+                                <span class="popular-views">
+                                    <i class="far fa-eye"></i> {{ 1000 - i*200 }} просмотров
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Подписка -->
+                <div class="sidebar-block subscribe-sidebar">
+                    <h3>Новые статьи на почту</h3>
+                    <p>Подпишитесь и получайте полезные материалы первыми</p>
+                    <form class="sidebar-subscribe">
+                        <input type="email" placeholder="Ваш email" required>
+                        <button type="submit" class="btn btn-primary">Подписаться</button>
+                    </form>
+                </div>
+                
+                <!-- Реклама услуги -->
+                <div class="sidebar-block promotion">
+                    <h3>Нужна консультация?</h3>
+                    <p>Запишитесь на прием к нашему специалисту</p>
+                    <a href="{{ url_for('contacts') }}" class="btn btn-primary">Записаться онлайн</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</article>
+
+<!-- Комментарии -->
+<section class="article-comments">
+    <div class="container">
+        <div class="comments-header">
+            <h2>Комментарии</h2>
+            <button class="btn btn-outline" id="addCommentBtn">
+                <i class="fas fa-comment"></i> Добавить комментарий
+            </button>
+        </div>
+        
+        <!-- Форма добавления комментария -->
+        <div class="comment-form-container" id="commentForm" style="display: none;">
+            <form id="newCommentForm">
+                <div class="form-group">
+                    <label for="commentName">Имя *</label>
+                    <input type="text" id="commentName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="commentEmail">Email (не публикуется) *</label>
+                    <input type="email" id="commentEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="commentText">Комментарий *</label>
+                    <textarea id="commentText" rows="5" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <input type="checkbox" id="commentAgree" required>
+                    <label for="commentAgree">
+                        Согласен с правилами публикации комментариев
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Отправить комментарий</button>
+                    <button type="button" class="btn btn-outline" id="cancelCommentBtn">Отмена</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Список комментариев -->
+        <div class="comments-list">
+            <div class="comment">
+                <div class="comment-header">
+                    <div class="comment-author">
+                        <img src="{{ url_for('static', filename='images/testimonials/user1.jpg') }}" alt="Мария Иванова">
+                        <div>
+                            <h4>Мария Иванова</h4>
+                            <span class="comment-date">2 дня назад</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comment-body">
+                    <p>Спасибо за полезную статью! Много нового узнала о правильном уходе за зубами питомца. Обязательно применю советы на практике.</p>
+                </div>
+                
+                <div class="comment-actions">
+                    <button class="comment-like">
+                        <i class="far fa-thumbs-up"></i> 12
+                    </button>
+                    <button class="comment-reply">
+                        <i class="fas fa-reply"></i> Ответить
+                    </button>
+                </div>
+            </div>
+            
+            <div class="comment">
+                <div class="comment-header">
+                    <div class="comment-author">
+                        <img src="{{ url_for('static', filename='images/testimonials/user2.jpg') }}" alt="Александр Петров">
+                        <div>
+                            <h4>Александр Петров</h4>
+                            <span class="comment-date">1 неделю назад</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comment-body">
+                    <p>Отличный материал! Особенно понравилась часть про профилактику. Жду новых статей на эту тему.</p>
+                </div>
+                
+                <div class="comment-actions">
+                    <button class="comment-like">
+                        <i class="far fa-thumbs-up"></i> 8
+                    </button>
+                    <button class="comment-reply">
+                        <i class="fas fa-reply"></i> Ответить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Другие статьи из категории -->
+<section class="related-articles bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Другие статьи из категории "{{ article.category }}"</h2>
+            <p class="section-subtitle">Читайте также</p>
+        </div>
+        
+        <div class="related-grid">
+            {% for i in range(1, 4) %}
+            <div class="related-card">
+                <div class="related-image">
+                    <img src="{{ url_for('static', filename='images/articles/article' ~ i ~ '.jpg') }}" alt="Статья {{ i }}">
+                </div>
+                <div class="related-content">
+                    <span class="related-category">{{ article.category }}</span>
+                    <h3>Интересная статья {{ i }} по теме "{{ article.category }}"</h3>
+                    <p>Краткое описание статьи, которое заинтересует читателя...</p>
+                    <a href="#" class="read-more">Читать далее →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('articles') }}?category={{ article.category }}" class="btn btn-primary">
+                Все статьи категории
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.breadcrumbs {
+    background: var(--light-color);
+    padding: 15px 0;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.breadcrumbs a {
+    color: var(--gray);
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    color: var(--primary-color);
+}
+
+.breadcrumbs span {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.article-header {
+    padding: 40px 0 20px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.article-category {
+    background: var(--primary-color);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.article-meta i {
+    margin-right: 5px;
+}
+
+.article-title {
+    font-size: 2.5rem;
+    color: var(--dark-color);
+    margin-bottom: 30px;
+    line-height: 1.3;
+}
+
+.article-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: var(--light-color);
+    border-radius: 10px;
+    margin-top: 30px;
+}
+
+.article-author img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.article-author h4 {
+    margin: 0 0 5px 0;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.article-author p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.article-author small {
+    color: var(--gray);
+    font-size: 0.85rem;
+}
+
+.article-content {
+    padding: 40px 0;
+}
+
+.article-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 50px;
+}
+
+.article-image-main {
+    margin-bottom: 30px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.article-image-main img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.image-caption {
+    text-align: center;
+    padding: 10px;
+    color: var(--gray);
+    font-style: italic;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.article-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--dark-color);
+    margin-bottom: 40px;
+}
+
+.article-text h2,
+.article-text h3,
+.article-text h4 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: var(--dark-color);
+}
+
+.article-text p {
+    margin-bottom: 20px;
+}
+
+.article-text ul,
+.article-text ol {
+    margin-bottom: 20px;
+    padding-left: 30px;
+}
+
+.article-text li {
+    margin-bottom: 10px;
+}
+
+.article-note {
+    background: #fff9e6;
+    border-left: 4px solid var(--warning);
+    padding: 20px;
+    border-radius: 0 10px 10px 0;
+    margin: 30px 0;
+}
+
+.article-note h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0;
+    color: var(--dark-color);
+}
+
+.article-note h4 i {
+    color: var(--warning);
+}
+
+.article-tags {
+    padding: 20px 0;
+    border-top: 1px solid var(--gray-light);
+    border-bottom: 1px solid var(--gray-light);
+    margin: 30px 0;
+}
+
+.article-tags h4 {
+    display: inline;
+    margin-right: 15px;
+    color: var(--gray);
+}
+
+.tag {
+    display: inline-block;
+    background: var(--light-color);
+    color: var(--dark-color);
+    padding: 5px 15px;
+    border-radius: 20px;
+    margin: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.article-share {
+    margin: 40px 0;
+}
+
+.article-share h4 {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+}
+
+.share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.share-btn.vk {
+    background: #4C75A3;
+    color: white;
+}
+
+.share-btn.telegram {
+    background: #2AABEE;
+    color: white;
+}
+
+.share-btn.twitter {
+    background: #1DA1F2;
+    color: white;
+}
+
+.share-btn.facebook {
+    background: #4267B2;
+    color: white;
+}
+
+.share-btn.copy-link {
+    background: var(--light-color);
+    color: var(--dark-color);
+}
+
+.share-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.article-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid var(--gray-light);
+}
+
+.prev-article a,
+.next-article a {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: var(--light-color);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.prev-article a:hover,
+.next-article a:hover {
+    background: #e9ecef;
+    transform: translateX(-5px);
+}
+
+.next-article a:hover {
+    transform: translateX(5px);
+}
+
+.prev-article i,
+.next-article i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.prev-article span,
+.next-article span {
+    display: block;
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.prev-article h5,
+.next-article h5 {
+    margin: 0;
+    color: var(--dark-color);
+    font-size: 1.1rem;
+}
+
+/* Боковая панель */
+.article-sidebar {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+}
+
+.sidebar-block {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.sidebar-block h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+}
+
+.similar-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.similar-article {
+    display: flex;
+    gap: 15px;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.similar-article:hover {
+    background: var(--light-color);
+}
+
+.similar-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.similar-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.similar-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    color: var(--dark-color);
+    line-height: 1.3;
+}
+
+.similar-category {
+    display: block;
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.similar-date {
+    display: block;
+    color: var(--gray);
+    font-size: 0.8rem;
+}
+
+.popular-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.popular-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--light-color);
+    border-radius: 8px;
+}
+
+.popular-rank {
+    background: var(--primary-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.popular-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
+    color: var(--dark-color);
+}
+
+.popular-views {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.popular-views i {
+    margin-right: 5px;
+}
+
+.subscribe-sidebar {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+}
+
+.subscribe-sidebar h3 {
+    color: white;
+}
+
+.subscribe-sidebar p {
+    opacity: 0.9;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.sidebar-subscribe {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-subscribe input {
+    padding: 12px 15px;
+    border: none;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.promotion {
+    text-align: center;
+    background: var(--light-color);
+}
+
+.promotion h3 {
+    color: var(--dark-color);
+}
+
+.promotion p {
+    margin-bottom: 20px;
+    color: var(--gray);
+}
+
+.promotion .btn {
+    width: 100%;
+}
+
+/* Комментарии */
+.article-comments {
+    padding: 60px 0;
+    border-top: 1px solid var(--gray-light);
+}
+
+.comments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.comments-header h2 {
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.comment-form-container {
+    background: var(--light-color);
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.comment-form-container .form-group {
+    margin-bottom: 20px;
+}
+
+.comment-form-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.comment-form-container input[type="text"],
+.comment-form-container input[type="email"],
+.comment-form-container textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--gray-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.comment-form-container input:focus,
+.comment-form-container textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.comment-form-container textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.comment-form-container .form-group:last-of-type {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-form-container .form-group:last-of-type label {
+    margin-bottom: 0;
+    font-weight: normal;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.comment {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.comment-author img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-author h4 {
+    margin: 0 0 5px 0;
+    color: var(--dark-color);
+}
+
+.comment-date {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.comment-body {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 20px;
+}
+
+.comment-like,
+.comment-reply {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.comment-like:hover {
+    background: #e8f5e9;
+    color: var(--success);
+}
+
+.comment-reply:hover {
+    background: var(--light-color);
+    color: var(--primary-color);
+}
+
+.comment-like.active {
+    background: #e8f5e9;
+    color: var(--success);
+}
+
+/* Связанные статьи */
+.related-articles {
+    padding: 60px 0;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.related-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.related-card:hover {
+    transform: translateY(-5px);
+}
+
+.related-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.related-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.related-card:hover .related-image img {
+    transform: scale(1.05);
+}
+
+.related-content {
+    padding: 25px;
+}
+
+.related-category {
+    display: inline-block;
+    background: var(--light-color);
+    color: var(--primary-color);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.related-content h3 {
+    margin: 0 0 15px 0;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+    line-height: 1.4;
+}
+
+.related-content p {
+    color: var(--gray);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.read-more {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+@media (max-width: 992px) {
+    .article-wrapper {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .article-sidebar {
+        position: static;
+    }
+    
+    .article-navigation {
+        grid-template-columns: 1fr;
+    }
+    
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .article-title {
+        font-size: 2rem;
+    }
+    
+    .share-buttons {
+        flex-direction: column;
+    }
+    
+    .share-btn {
+        justify-content: center;
+    }
+    
+    .comments-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Копирование ссылки
+    const copyLinkBtn = document.querySelector('.copy-link');
+    
+    copyLinkBtn.addEventListener('click', function() {
+        const url = window.location.href;
+        
+        navigator.clipboard.writeText(url).then(function() {
+            // Временная смена текста кнопки
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i> <span>Ссылка скопирована!</span>';
+            this.style.background = 'var(--success)';
+            this.style.color = 'white';
+            
+            setTimeout(() => {
+                this.innerHTML = originalHTML;
+                this.style.background = '';
+                this.style.color = '';
+            }, 2000);
+        }.bind(this)).catch(function(err) {
+            console.error('Ошибка копирования: ', err);
+            alert('Не удалось скопировать ссылку');
+        });
+    });
+    
+    // Поделиться в соцсетях
+    const shareButtons = document.querySelectorAll('.share-btn:not(.copy-link)');
+    
+    shareButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const url = window.location.href;
+            const title = document.title;
+            const platform = this.classList[1];
+            
+            let shareUrl = '';
+            
+            switch(platform) {
+                case 'vk':
+                    shareUrl = `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+                    break;
+                case 'telegram':
+                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+                    break;
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                    break;
+            }
+            
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        });
+    });
+    
+    // Комментарии
+    const addCommentBtn = document.getElementById('addCommentBtn');
+    const cancelCommentBtn = document.getElementById('cancelCommentBtn');
+    const commentForm = document.getElementById('commentForm');
+    const newCommentForm = document.getElementById('newCommentForm');
+    
+    addCommentBtn.addEventListener('click', function() {
+        commentForm.style.display = 'block';
+        this.style.display = 'none';
+        
+        // Плавная прокрутка к форме
+        commentForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    
+    cancelCommentBtn.addEventListener('click', function() {
+        commentForm.style.display = 'none';
+        addCommentBtn.style.display = 'flex';
+        newCommentForm.reset();
+    });
+    
+    newCommentForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('commentName').value.trim();
+        const email = document.getElementById('commentEmail').value.trim();
+        const text = document.getElementById('commentText').value.trim();
+        
+        if (!name || !email || !text) {
+            alert('Пожалуйста, заполните все обязательные поля');
+            return;
+        }
+        
+        // Здесь должна быть отправка на сервер
+        // Для демонстрации просто покажем сообщение
+        
+        alert('Комментарий отправлен на модерацию. Спасибо!');
+        
+        // Сброс формы и скрытие
+        this.reset();
+        commentForm.style.display = 'none';
+        addCommentBtn.style.display = 'flex';
+    });
+    
+    // Лайки комментариев
+    const likeButtons = document.querySelectorAll('.comment-like');
+    
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const isActive = this.classList.contains('active');
+            const countElement = this.querySelector('i').nextSibling;
+            let count = parseInt(countElement.textContent);
+            
+            if (isActive) {
+                this.classList.remove('active');
+                count--;
+                this.innerHTML = `<i class="far fa-thumbs-up"></i> ${count}`;
+            } else {
+                this.classList.add('active');
+                count++;
+                this.innerHTML = `<i class="fas fa-thumbs-up"></i> ${count}`;
+            }
+        });
+    });
+    
+    // Ответ на комментарий
+    const replyButtons = document.querySelectorAll('.comment-reply');
+    
+    replyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Показываем форму для ответа
+            commentForm.style.display = 'block';
+            addCommentBtn.style.display = 'none';
+            
+            // Добавляем упоминание автора в текстовое поле
+            const authorName = this.closest('.comment').querySelector('.comment-author h4').textContent;
+            const textarea = document.getElementById('commentText');
+            textarea.value = `@${authorName}, `;
+            textarea.focus();
+            
+            // Прокрутка к форме
+            commentForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+    
+    // Подписка в боковой панели
+    const sidebarSubscribeForm = document.querySelector('.sidebar-subscribe');
+    
+    sidebarSubscribeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = this.querySelector('input[type="email"]').value.trim();
+        
+        if (!email) {
+            alert('Пожалуйста, введите email');
+            return;
+        }
+        
+        // Отправка на сервер
+        alert(`Спасибо за подписку! На адрес ${email} будут приходить новые статьи.`);
+        this.reset();
+    });
+});
+</script>
+{% endblock %}

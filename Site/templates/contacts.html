@@ -1,0 +1,1115 @@
+{% extends base_template %}
+
+{% block title %}Контакты и запись - Ветеринарная клиника "Друг"{% endblock %}
+
+{% block content %}
+<!-- Заголовок страницы -->
+<div class="page-header">
+    <div class="container">
+        <h1>Контакты и запись</h1>
+        <p>Свяжитесь с нами удобным для вас способом</p>
+    </div>
+</div>
+
+<!-- Основной контент -->
+<div class="contacts-content">
+    <div class="container">
+        <div class="contacts-grid">
+            <!-- Левая колонка: Контактная информация -->
+            <div class="contacts-info">
+                <!-- Экстренная помощь -->
+                <div class="emergency-contact">
+                    <div class="emergency-icon">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <div class="emergency-details">
+                        <h3>Экстренная помощь</h3>
+                        <p class="emergency-phone">+7 (495) 765-43-21</p>
+                        <p>Круглосуточно, без выходных</p>
+                    </div>
+                </div>
+                
+                <!-- Основные контакты -->
+                <div class="contact-details">
+                    <h2>Контактная информация</h2>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Адрес клиники</h4>
+                            <p>Москва, ул. Ветеринарная, дом 15</p>
+                            <p class="contact-note">Метро "Ветеринарная" (выход №4), 5 минут пешком</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Телефоны</h4>
+                            <p>+7 (495) 123-45-67 - основной телефон</p>
+                            <p>+7 (495) 765-43-21 - скорая помощь</p>
+                            <p>+7 (495) 987-65-43 - администратор</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Часы работы</h4>
+                            <p><strong>Понедельник - Пятница:</strong> 8:00 - 22:00</p>
+                            <p><strong>Суббота - Воскресенье:</strong> 9:00 - 20:00</p>
+                            <p><strong>Экстренная помощь:</strong> круглосуточно</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Электронная почта</h4>
+                            <p><strong>Общие вопросы:</strong> info@vetdrug.ru</p>
+                            <p><strong>Запись на прием:</strong> appointment@vetdrug.ru</p>
+                            <p><strong>Вопросы сотрудничества:</strong> partners@vetdrug.ru</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Социальные сети -->
+                <div class="social-contacts">
+                    <h3>Мы в социальных сетях</h3>
+                    <div class="social-buttons">
+                        <a href="#" class="social-btn vk">
+                            <i class="fab fa-vk"></i>
+                            <span>ВКонтакте</span>
+                        </a>
+                        <a href="#" class="social-btn telegram">
+                            <i class="fab fa-telegram"></i>
+                            <span>Telegram</span>
+                        </a>
+                        <a href="#" class="social-btn youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                        <a href="#" class="social-btn instagram">
+                            <i class="fab fa-instagram"></i>
+                            <span>Instagram</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Правая колонка: Формы -->
+            <div class="contacts-forms">
+                <!-- Форма онлайн-записи -->
+                <div class="form-container appointment-form">
+                    <h2>Онлайн-запись на прием</h2>
+                    <p>Заполните форму, и мы свяжемся с вами для подтверждения записи</p>
+                    
+                    <form id="appointmentForm" method="POST" action="{{ url_for('make_appointment') }}">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="petName">Имя питомца *</label>
+                                <input type="text" id="petName" name="pet_name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="petSpecies">Вид животного *</label>
+                                <select id="petSpecies" name="pet_species" required>
+                                    <option value="">Выберите вид</option>
+                                    <option value="собака">Собака</option>
+                                    <option value="кошка">Кошка</option>
+                                    <option value="грызун">Грызун</option>
+                                    <option value="птица">Птица</option>
+                                    <option value="рептилия">Рептилия</option>
+                                    <option value="другое">Другое</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="petAge">Возраст питомца</label>
+                                <input type="number" id="petAge" name="pet_age" min="0" max="30">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="serviceType">Тип услуги *</label>
+                                <select id="serviceType" name="service_id" required>
+                                    <option value="">Выберите услугу</option>
+                                    {% for service in services %}
+                                    <option value="{{ service.id }}">{{ service.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="doctorSelect">Врач (опционально)</label>
+                            <select id="doctorSelect" name="doctor_id">
+                                <option value="">Любой доступный врач</option>
+                                {% for doctor in doctors %}
+                                <option value="{{ doctor.id }}">{{ doctor.name }} - {{ doctor.specialization }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appointmentDate">Дата приема *</label>
+                                <input type="date" id="appointmentDate" name="appointment_date" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="appointmentTime">Время приема *</label>
+                                <select id="appointmentTime" name="appointment_time" required>
+                                    <option value="">Выберите время</option>
+                                    <option value="09:00">09:00</option>
+                                    <option value="10:00">10:00</option>
+                                    <option value="11:00">11:00</option>
+                                    <option value="12:00">12:00</option>
+                                    <option value="13:00">13:00</option>
+                                    <option value="14:00">14:00</option>
+                                    <option value="15:00">15:00</option>
+                                    <option value="16:00">16:00</option>
+                                    <option value="17:00">17:00</option>
+                                    <option value="18:00">18:00</option>
+                                    <option value="19:00">19:00</option>
+                                    <option value="20:00">20:00</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">Дополнительная информация</label>
+                            <textarea id="notes" name="notes" rows="3" placeholder="Опишите проблему или пожелания..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clientName">Ваше имя *</label>
+                            <input type="text" id="clientName" name="client_name" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="clientPhone">Телефон *</label>
+                                <input type="tel" id="clientPhone" name="client_phone" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="clientEmail">Email</label>
+                                <input type="email" id="clientEmail" name="client_email">
+                            </div>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="appointmentAgree" required>
+                            <label for="appointmentAgree">
+                                Я согласен на обработку персональных данных и подтверждаю, что ознакомлен с политикой конфиденциальности
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-calendar-check"></i> Записаться на прием
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Форма обратной связи -->
+                <div class="form-container feedback-form">
+                    <h2>Обратная связь</h2>
+                    <p>Есть вопросы или предложения? Напишите нам!</p>
+                    
+                    <form id="feedbackForm" method="POST" action="{{ url_for('contacts') }}">
+                        <div class="form-group">
+                            <label for="feedbackName">Ваше имя *</label>
+                            <input type="text" id="feedbackName" name="name" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="feedbackPhone">Телефон *</label>
+                                <input type="tel" id="feedbackPhone" name="phone" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="feedbackEmail">Email</label>
+                                <input type="email" id="feedbackEmail" name="email">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="feedbackTopic">Тема сообщения</label>
+                            <select id="feedbackTopic" name="topic">
+                                <option value="">Выберите тему</option>
+                                <option value="вопрос">Вопрос по услугам</option>
+                                <option value="жалоба">Жалоба</option>
+                                <option value="предложение">Предложение</option>
+                                <option value="сотрудничество">Сотрудничество</option>
+                                <option value="другое">Другое</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="feedbackMessage">Сообщение *</label>
+                            <textarea id="feedbackMessage" name="message" rows="4" required placeholder="Опишите ваш вопрос или предложение..."></textarea>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="feedbackAgree" required>
+                            <label for="feedbackAgree">
+                                Я согласен на обработку персональных данных
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-secondary btn-block">
+                            <i class="fas fa-paper-plane"></i> Отправить сообщение
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Карта -->
+<section class="map-section">
+    <div class="container">
+        <h2>Как добраться</h2>
+        <div class="map-container">
+            <div class="map-frame">
+                <!-- Здесь будет карта -->
+                <div class="map-placeholder">
+                    <div class="map-mockup">
+                        <div class="map-points">
+                            <div class="map-point main" style="top: 45%; left: 48%;">
+                                <div class="point-marker">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="point-info">
+                                    <h4>Ветеринарная клиника "Друг"</h4>
+                                    <p>ул. Ветеринарная, 15</p>
+                                </div>
+                            </div>
+                            
+                            <div class="map-point metro" style="top: 50%; left: 30%;">
+                                <div class="point-marker">
+                                    <i class="fas fa-subway"></i>
+                                </div>
+                                <div class="point-info">
+                                    <h4>Метро "Ветеринарная"</h4>
+                                    <p>Выход №4, 5 мин пешком</p>
+                                </div>
+                            </div>
+                            
+                            <div class="map-point parking" style="top: 60%; left: 70%;">
+                                <div class="point-marker">
+                                    <i class="fas fa-parking"></i>
+                                </div>
+                                <div class="point-info">
+                                    <h4>Парковка</h4>
+                                    <p>Бесплатная парковка для клиентов</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="map-legend">
+                            <span><i class="fas fa-map-marker-alt"></i> Клиника</span>
+                            <span><i class="fas fa-subway"></i> Метро</span>
+                            <span><i class="fas fa-parking"></i> Парковка</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-directions">
+                <h3>Схема проезда</h3>
+                
+                <div class="direction-option">
+                    <div class="direction-icon">
+                        <i class="fas fa-subway"></i>
+                    </div>
+                    <div class="direction-info">
+                        <h4>На метро</h4>
+                        <p>Станция "Ветеринарная", выход №4. Далее 5 минут пешком по улице Ветеринарной.</p>
+                    </div>
+                </div>
+                
+                <div class="direction-option">
+                    <div class="direction-icon">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <div class="direction-info">
+                        <h4>На автобусе</h4>
+                        <p>Автобусы №123, 456, 789 до остановки "Ветеринарная улица".</p>
+                    </div>
+                </div>
+                
+                <div class="direction-option">
+                    <div class="direction-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="direction-info">
+                        <h4>На автомобиле</h4>
+                        <p>Бесплатная парковка для клиентов на территории клиники. Навигатор: ул. Ветеринарная, 15.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="contacts-faq bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Частые вопросы</h2>
+            <p class="section-subtitle">Ответы на популярные вопросы о записи и визитах</p>
+        </div>
+        
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h3>Нужна ли предварительная запись?</h3>
+                <p>Да, запись на плановый прием обязательна. Это позволяет нам оптимально распределить время врачей. В экстренных случаях прием ведется без записи.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Что взять с собой на прием?</h3>
+                <p>Рекомендуем взять ветеринарный паспорт животного (если есть), результаты предыдущих анализов, любимое лакомство питомца для поощрения.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Можно ли приехать без животного для консультации?</h3>
+                <p>Да, вы можете приехать без питомца для предварительной консультации с врачом. Однако для назначения лечения необходим осмотр животного.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Есть ли возможность вызова врача на дом?</h3>
+                <p>Да, мы предоставляем услугу выезда врача на дом. Стоимость зависит от района и времени вызова. Уточняйте по телефону.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Какие способы оплаты принимаются?</h3>
+                <p>Мы принимаем наличные, банковские карты (Visa, Mastercard, Мир), а также безналичный расчет для юридических лиц.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Есть ли у вас стационар?</h3>
+                <p>Да, в нашей клинике есть стационар для наблюдения за животными после операций и в тяжелом состоянии.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.contacts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    margin-bottom: 60px;
+}
+
+@media (max-width: 992px) {
+    .contacts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Контактная информация */
+.emergency-contact {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.emergency-icon i {
+    font-size: 3rem;
+}
+
+.emergency-details h3 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.emergency-phone {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.contact-details {
+    margin-bottom: 40px;
+}
+
+.contact-details h2 {
+    margin-bottom: 30px;
+    color: var(--dark-color);
+}
+
+.contact-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.contact-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.contact-text h4 {
+    margin: 0 0 10px 0;
+    color: var(--dark-color);
+}
+
+.contact-text p {
+    margin: 5px 0;
+    color: var(--gray);
+}
+
+.contact-note {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-style: italic;
+}
+
+.social-contacts h3 {
+    margin-bottom: 20px;
+    color: var(--dark-color);
+}
+
+.social-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+}
+
+.social-btn i {
+    font-size: 1.2rem;
+}
+
+.social-btn.vk { background: #4C75A3; }
+.social-btn.telegram { background: #2AABEE; }
+.social-btn.youtube { background: #FF0000; }
+.social-btn.instagram { background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D); }
+
+/* Формы */
+.form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.form-container h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+.form-container p {
+    color: var(--gray);
+    margin-bottom: 25px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--gray-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 25px 0;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.form-check input {
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+
+/* Карта */
+.map-section {
+    padding: 60px 0;
+    border-top: 1px solid var(--gray-light);
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.map-section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--dark-color);
+}
+
+.map-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .map-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.map-frame {
+    background: var(--light-color);
+    border-radius: 15px;
+    overflow: hidden;
+    height: 400px;
+    position: relative;
+}
+
+.map-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-mockup {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(145deg, #d0d0d0, #f0f0f0);
+}
+
+.map-points {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.map-point {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.point-marker {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.point-marker:hover {
+    transform: scale(1.2);
+}
+
+.map-point.main .point-marker {
+    background: var(--primary-color);
+    color: white;
+}
+
+.map-point.metro .point-marker {
+    background: #FF6B6B;
+    color: white;
+}
+
+.map-point.parking .point-marker {
+    background: var(--success);
+    color: white;
+}
+
+.point-info {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    min-width: 200px;
+    display: none;
+}
+
+.map-point:hover .point-info {
+    display: block;
+}
+
+.point-info h4 {
+    margin: 0 0 5px 0;
+    color: var(--dark-color);
+    font-size: 0.9rem;
+}
+
+.point-info p {
+    margin: 0;
+    color: var(--gray);
+    font-size: 0.8rem;
+}
+
+.map-legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.map-legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.map-legend i {
+    margin-right: 5px;
+}
+
+.map-directions {
+    padding: 20px;
+}
+
+.map-directions h3 {
+    margin-bottom: 25px;
+    color: var(--dark-color);
+}
+
+.direction-option {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.direction-option:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.direction-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--light-color);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.direction-info h4 {
+    margin: 0 0 10px 0;
+    color: var(--dark-color);
+}
+
+.direction-info p {
+    margin: 0;
+    color: var(--gray);
+    line-height: 1.5;
+}
+
+/* FAQ */
+.contacts-faq {
+    padding: 60px 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-subtitle {
+    color: var(--gray);
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.faq-item {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.faq-item h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--dark-color);
+    font-size: 1.2rem;
+}
+
+.faq-item p {
+    margin: 0;
+    color: var(--gray);
+    line-height: 1.6;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Маска для телефона
+    const phoneInputs = document.querySelectorAll('input[type="tel"]');
+    
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                value = '+7 (' + value.substring(1, 4) + ') ' + 
+                        value.substring(4, 7) + '-' + 
+                        value.substring(7, 9) + '-' + 
+                        value.substring(9, 11);
+            }
+            this.value = value.substring(0, 18);
+        });
+    });
+    
+    // Минимальная дата для записи - сегодня
+    const dateInput = document.getElementById('appointmentDate');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+        dateInput.value = today;
+        
+        // Обновление доступного времени в зависимости от дня недели
+        dateInput.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const dayOfWeek = selectedDate.getDay(); // 0 - воскресенье, 1 - понедельник
+            
+            const timeSelect = document.getElementById('appointmentTime');
+            const currentTime = new Date();
+            
+            // Сбрасываем время
+            timeSelect.innerHTML = '<option value="">Выберите время</option>';
+            
+            // Определяем рабочие часы в зависимости от дня недели
+            let startHour, endHour;
+            
+            if (dayOfWeek === 0 || dayOfWeek === 6) { // Выходные
+                startHour = 9;
+                endHour = 20;
+            } else { // Будни
+                startHour = 8;
+                endHour = 22;
+            }
+            
+            // Добавляем варианты времени
+            for (let hour = startHour; hour < endHour; hour++) {
+                const timeValue = hour.toString().padStart(2, '0') + ':00';
+                const option = document.createElement('option');
+                option.value = timeValue;
+                option.textContent = timeValue;
+                
+                // Если выбрана сегодняшняя дата, скрываем прошедшее время
+                if (this.value === today) {
+                    const currentHour = currentTime.getHours();
+                    if (hour <= currentHour) {
+                        option.disabled = true;
+                        option.textContent += ' (прошло)';
+                    }
+                }
+                
+                timeSelect.appendChild(option);
+            }
+        });
+        
+        // Инициализируем время при загрузке
+        dateInput.dispatchEvent(new Event('change'));
+    }
+    
+    // Валидация форм
+    const appointmentForm = document.getElementById('appointmentForm');
+    const feedbackForm = document.getElementById('feedbackForm');
+    
+    function validateForm(form) {
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            field.classList.remove('error');
+            
+            if (!field.value.trim()) {
+                field.classList.add('error');
+                isValid = false;
+                
+                // Показываем ошибку
+                let errorMsg = field.parentNode.querySelector('.field-error');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('div');
+                    errorMsg.className = 'field-error';
+                    errorMsg.textContent = 'Это поле обязательно для заполнения';
+                    field.parentNode.appendChild(errorMsg);
+                }
+            } else {
+                // Убираем ошибку если она была
+                const errorMsg = field.parentNode.querySelector('.field-error');
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+            }
+        });
+        
+        // Валидация email
+        const emailFields = form.querySelectorAll('input[type="email"]');
+        emailFields.forEach(field => {
+            if (field.value && !isValidEmail(field.value)) {
+                field.classList.add('error');
+                isValid = false;
+                
+                let errorMsg = field.parentNode.querySelector('.field-error');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('div');
+                    errorMsg.className = 'field-error';
+                    errorMsg.textContent = 'Введите корректный email адрес';
+                    field.parentNode.appendChild(errorMsg);
+                }
+            }
+        });
+        
+        return isValid;
+    }
+    
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+    
+    // Обработка отправки формы записи
+    if (appointmentForm) {
+        appointmentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm(this)) {
+                // Здесь обычно отправка формы на сервер
+                // Для демонстрации покажем сообщение
+                
+                const petName = document.getElementById('petName').value;
+                const appointmentDate = document.getElementById('appointmentDate').value;
+                const appointmentTime = document.getElementById('appointmentTime').value;
+                
+                alert(`Спасибо, ${document.getElementById('clientName').value}!\n\nЗапись для ${petName} на ${appointmentDate} в ${appointmentTime} создана.\nМы свяжемся с вами для подтверждения.`);
+                
+                // Сброс формы
+                this.reset();
+                
+                // Сброс даты на сегодня
+                if (dateInput) {
+                    const today = new Date().toISOString().split('T')[0];
+                    dateInput.value = today;
+                    dateInput.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    }
+    
+    // Обработка отправки формы обратной связи
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm(this)) {
+                // Здесь обычно отправка формы на сервер
+                // Для демонстрации покажем сообщение
+                
+                alert('Спасибо за ваше сообщение!\nМы ответим вам в ближайшее время.');
+                
+                // Сброс формы
+                this.reset();
+            }
+        });
+    }
+    
+    // Интерактивные точки на карте
+    const mapPoints = document.querySelectorAll('.map-point');
+    
+    mapPoints.forEach(point => {
+        point.addEventListener('click', function() {
+            const marker = this.querySelector('.point-marker');
+            const info = this.querySelector('.point-info');
+            
+            // Анимация маркера
+            marker.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                marker.style.transform = 'scale(1)';
+            }, 300);
+            
+            // Показываем/скрываем информацию
+            const isVisible = info.style.display === 'block';
+            
+            // Скрываем все информационные блоки
+            document.querySelectorAll('.point-info').forEach(i => {
+                i.style.display = 'none';
+            });
+            
+            // Показываем текущий, если он был скрыт
+            if (!isVisible) {
+                info.style.display = 'block';
+            }
+        });
+    });
+    
+    // Закрытие информационных блоков при клике вне карты
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.map-point')) {
+            document.querySelectorAll('.point-info').forEach(info => {
+                info.style.display = 'none';
+            });
+        }
+    });
+    
+    // Стили для ошибок валидации
+    const style = document.createElement('style');
+    style.textContent = `
+        .error {
+            border-color: #dc3545 !important;
+        }
+        
+        .field-error {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+{% endblock %}
